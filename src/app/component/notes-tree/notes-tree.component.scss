@@ -1,0 +1,22 @@
+.notes-tree-container{
+    background: lavender;
+}
+
+.notes-tree-section{
+    background: lavender;
+}
+
+.notes-tree-section-invisible {
+    display: none;
+  }
+  
+  .notes-tree-section ul,
+  .notes-tree-section li {
+    margin-top: 0;
+    margin-bottom: 0;
+    list-style-type: none;
+  }
+
+  .notes-tree-button{
+      border: 0px;
+  }

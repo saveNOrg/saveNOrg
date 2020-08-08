@@ -22,14 +22,14 @@ export class ElectronService {
     } else {
       console.warn('App not running inside Electron!');
     }
-    //electron.ipcRenderer
-    this.ipc.on('getImagesResponse', (event, images) => {
-      this.images.next(images);
-    });
-    //electron.ipcRenderer
-    this.ipc.on('getDirectoryResponse', (event, directory) => {
-      this.directory.next(directory);
-    });
+    // //electron.ipcRenderer
+    // this.ipc.on('getImagesResponse', (event, images) => {
+    //   this.images.next(images);
+    // });
+    // //electron.ipcRenderer
+    // this.ipc.on('getDirectoryResponse', (event, directory) => {
+    //   this.directory.next(directory);
+    // });
   }
 
   navigateDirectory(path) {

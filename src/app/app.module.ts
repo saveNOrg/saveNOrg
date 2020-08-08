@@ -5,6 +5,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
+import {MatTreeModule} from '@angular/material/tree';
+import { QuillModule } from 'ngx-quill'
 
 
 import { AppComponent } from './app.component';
@@ -25,7 +27,9 @@ import { NotesDataComponent } from './component/notes-data/notes-data.component'
     FlexLayoutModule,
     BrowserAnimationsModule,
     MatIconModule,
-    MatInputModule
+    MatInputModule,
+    MatTreeModule,
+    QuillModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent]
