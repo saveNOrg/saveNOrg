@@ -6,7 +6,9 @@ import * as fs from "fs";
 let win: BrowserWindow;
 
 function createWindow() {
-  win = new BrowserWindow({ width: 800, height: 600,
+  win = new BrowserWindow({ "width": 800, "height": 600,
+    "title": "My Life Notes...",
+    "icon": path.join(__dirname,`./myLifeNotes/favicon.ico`),
     webPreferences: {
       nodeIntegration: true
     } });

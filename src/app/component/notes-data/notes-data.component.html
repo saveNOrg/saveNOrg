@@ -1,3 +1,9 @@
-<div>
-    <quill-editor></quill-editor>
+<div class="notes-data-container" fxLayout="column" fxLayoutAlign="start stretch" >
+
+    <quill-editor [styles]="{ 'min-height': '200px'}" 
+        (onFocus)="focus($event)" 
+        (onEditorChanged)="changedEditor($event)" (onBlur)="blur($event)" 
+        (onEditorCreated)="created($event)">
+    </quill-editor>
+
 </div>

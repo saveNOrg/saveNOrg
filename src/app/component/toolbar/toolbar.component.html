@@ -1,18 +1,19 @@
-<div class="toolbar-container">
-<div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="4">
-    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="4" fxFlex="50">
+<div class="toolbar-container" fxLayout="column" fxLayoutAlign="center stretch" >
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="4"  class="toolbar-button">
 
-        <mat-icon aria-hidden="false" aria-label="Add note"v>note_add</mat-icon>
-        <mat-icon aria-hidden="false" aria-label="Delete note">delete</mat-icon>
-        <mat-icon aria-hidden="false" aria-label="Save note" (click)="saveNote()">save</mat-icon>
-        
+            <mat-icon aria-hidden="false" aria-label="Add note" v>note_add</mat-icon>
+            <mat-icon aria-hidden="false" aria-label="Delete note">delete</mat-icon>
+            <mat-icon aria-hidden="false" aria-label="Save note" (click)="saveNote()">save</mat-icon>
+
+        </div>
+        <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="4"  class="toolbar-search">
+
+            <mat-form-field appearance="outline">
+                <mat-label>Search</mat-label>
+                <input matInput placeholder="Search" size="20" />
+                <mat-icon aria-hidden="false" aria-label="Search notes" matSuffix>search</mat-icon>
+            </mat-form-field>
+        </div>
     </div>
-    <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="4" fxFlex="50" class="toolbar-search">
-
-        <mat-form-field appearance="outline">
-        <mat-label>Search</mat-label>
-        <input matInput placeholder="Search" size="20"/>
-        <mat-icon aria-hidden="false" aria-label="Search notes" matSuffix>search</mat-icon>    
-        </mat-form-field>
-</div>
 </div>
