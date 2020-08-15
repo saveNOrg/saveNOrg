@@ -8,15 +8,61 @@
 
 .notes-tree-section-invisible {
     display: none;
-  }
+}
   
-  .notes-tree-section ul,
-  .notes-tree-section li {
+.mat-tree-node{
+    min-height: unset;
+}
+
+.notes-tree-section ul,
+.notes-tree-section li {
     margin-top: 0;
     margin-bottom: 0;
     list-style-type: none;
-  }
+}
 
-  .notes-tree-button{
-      border: 0px;
+.notes-tree-button{
+    background: lavender;
+    border: 0px;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+}
+
+.notes-tree-button:focus{
+    border: 0px;
+    outline-width: 0px;
+    cursor: pointer;
+}
+
+.notes-tree-leave{
+    border: 0px;
+    outline-width: 0px;
+    background: lavender;
+    width: 100%;
+    text-align: left;
+}
+
+
+.notes-tree-leave:hover{
+    border: 0px;
+    outline-width: 0px;
+}
+
+.notes-tree-node{
+    background: lavender;
+    width: 100%;
+    height: 30px;
+    border: 1px solid lightgray;
+    outline: 1px solid lightgray;
+}
+
+.notes-tree-node-selected{
+    background: ivory;
+    //border: 1px solid lightgray;
+    //outline: 1px solid lightgray;
+    border-right: 0px;
+}
+  .notes-tree-icon{
+    vertical-align: middle;
   }

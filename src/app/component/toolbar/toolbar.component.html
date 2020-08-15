@@ -1,11 +1,15 @@
 <div class="toolbar-container" fxLayout="column" fxLayoutAlign="center stretch" >
     <div fxLayout="row" fxLayoutAlign="space-between center">
         <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="4"  class="toolbar-button">
-
-            <mat-icon aria-hidden="false" aria-label="Add note" v>note_add</mat-icon>
-            <mat-icon aria-hidden="false" aria-label="Delete note">delete</mat-icon>
-            <mat-icon aria-hidden="false" aria-label="Save note" (click)="saveNote()">save</mat-icon>
-
+            <button mat-icon-button aria-label="Add note" class="toolbar-btn" (click)="addNote()">
+                <mat-icon>note_add</mat-icon>
+            </button>
+            <button mat-icon-button aria-label="Delete note" class="toolbar-btn" (click)="deleteNote()">
+                <mat-icon>delete</mat-icon>
+            </button>
+            <button mat-icon-button aria-label="Save note" class="toolbar-btn" (click)="saveNote()">
+                <mat-icon>save</mat-icon>
+            </button>
         </div>
         <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="4"  class="toolbar-search">
 
