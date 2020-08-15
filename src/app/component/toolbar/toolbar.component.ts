@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ElectronService } from 'src/app/service/electron.service';
+import { NotesActionService } from "../../service/notes-action.service";
 
 @Component({
   selector: 'app-toolbar',
@@ -9,15 +10,28 @@ import { ElectronService } from 'src/app/service/electron.service';
 })
 export class ToolbarComponent implements OnInit {
 
-  value:string='';
-  constructor( private electron_service: ElectronService) { }
+  message:string='';
+
+  constructor( private electron_service: ElectronService,
+               private action_service: NotesActionService) { }
 
   ngOnInit(): void {
+    this.action_service.currentMessage.subscribe(message => this.message = message)
   }
 
   saveNote(){
     console.log("saving the note");
-    this.electron_service.saveData("note1",{"name":"note2","data":"data for note1"})
+    this.action_service.changeMessage("save")
+  }
+
+  addNote(){
+    console.log("saving the note");
+    this.action_service.changeMessage("add")
+  }
+
+  deleteNote(){
+    console.log("saving the note");
+    this.action_service.changeMessage("delete")
   }
 
 }
