@@ -7,7 +7,7 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
 import {MatTreeModule} from '@angular/material/tree';
 import { QuillModule } from 'ngx-quill'
-
+import { FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { ToolbarComponent } from './component/toolbar/toolbar.component';
@@ -29,7 +29,8 @@ import { NotesDataComponent } from './component/notes-data/notes-data.component'
     MatIconModule,
     MatInputModule,
     MatTreeModule,
-    QuillModule.forRoot()
+    QuillModule.forRoot(),
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

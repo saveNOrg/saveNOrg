@@ -1,67 +1,30 @@
-import { Component, OnInit, Injectable } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, Input } from '@angular/core';
 import {NestedTreeControl} from '@angular/cdk/tree';
 import {MatTreeNestedDataSource} from '@angular/material/tree'; 
 import { NotesActionService } from "../../service/notes-action.service";
-
-/**
- * Food data with nested structure.
- * Each node has a name and an optional list of children.
- */
-interface NoteNode {
-  name: string;
-  level: number;
-  children?: NoteNode[];
-}
-
+import { NotesTreeDataSource, NotesNode } from './notes-tree-datasource';
+import { SelectedNodeService } from '../../service/selected-node.service';
 
 @Component({
   selector: 'app-notes-tree',
   templateUrl: './notes-tree.component.html',
-  styleUrls: ['./notes-tree.component.scss']
+  styleUrls: ['./notes-tree.component.scss'],
+  encapsulation : ViewEncapsulation.None
 })
 export class NotesTreeComponent implements OnInit {
 
   message:string='';
   new_node_name:string='';
-  node_selected:NoteNode;
-  TREE_DATA: NoteNode[] = [
-    {
-      name: 'Fruit',
-      level: 0,
-      children: [
-        {name: 'Apple', level: 1},
-        {name: 'Banana', level: 1},
-        {name: 'Fruit loops', level: 1},
-      ]
-    }, {
-      name: 'Vegetables',
-      level: 0,
-      children: [
-        {
-          name: 'Green', level: 1,
-          children: [
-            {name: 'Broccoli', level: 2},
-            {name: 'Brussels sprouts', level: 2},
-          ]
-        }, {
-          name: 'Orange', level: 1,
-          children: [
-            {name: 'Pumpkins', level: 2},
-            {name: 'Carrots', level: 2},
-          ]
-        },
-      ]
-    },
-  ];
+  node_selected:NotesNode;
+  @Input() data:NotesNode[]=[{name:'', level:1}];
+  dataSource:NotesTreeDataSource;
+  
 
-  treeControl = new NestedTreeControl<NoteNode>(node => node.children);
-  dataSource = new MatTreeNestedDataSource<NoteNode>();
 
-  constructor(private action_service: NotesActionService) {
-    this.dataSource.data = this.TREE_DATA;
+  constructor(private action_service: NotesActionService,
+              private select_service: SelectedNodeService) {
+    this.dataSource = new NotesTreeDataSource();
   }
-
-  hasChild = (_: number, node: NoteNode) => !!node.children && node.children.length > 0;
 
   ngOnInit(){
     this.action_service.currentMessage.subscribe(
@@ -71,22 +34,33 @@ export class NotesTreeComponent implements OnInit {
         this.exec_action(this.message);
       }
     );
+    this.select_service.currentNode.subscribe(node => this.node_selected = node)
   }
 
   getSelected(event){
-    console.log("Tree selected ", event)
-    this.node_selected = event;
+    event.selected = !event.selected ;
+    console.log("event ", event)
+    this.select_service.changeSelectedNode(event);
   }
 
   exec_action(action:string){
     switch(action) { 
       case 'add': { 
-         if( this.node_selected.children.length > 0 ){
-           this.node_selected.children.push({name:'',level:this.node_selected.level+1});
-         }else{
-           let parent_node = this.node_selected.level - 1;
-          this.node_selected.children.push({name:'',level:this.node_selected.level+1});
+
+         if( this.node_selected ){
+          let index = this.data.findIndex(node => node.name == this.node_selected.name && node.level == this.node_selected.level);
+          if( index >= 0 ){
+            if( !this.data[index].children ){
+              this.data[index].children =[]
+            }
+            this.data[index].children.push({ name: "" , level:this.node_selected.level+1, selected: true });
+            this.node_selected = { name: "" , level:this.node_selected.level+1, selected: true };
+            setTimeout(()=>{ // this will make the execution after the above boolean has changed
+              (<HTMLInputElement>document.getElementById("note_name_input")).focus();
+            },0);  
+          }
          }
+
          break; 
       } 
       case 'delete': { 
@@ -102,6 +76,14 @@ export class NotesTreeComponent implements OnInit {
 
   find_parent(){
     
+  }
+
+  renameNode(){
+    console.log("event ", this.data)
+    let selected = this.data.find(ren_node => ren_node.name == '');
+    selected.name = this.new_node_name;
+    selected.selected = false;
+    this.getSelected( selected );
   }
 
 }
