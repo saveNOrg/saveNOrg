@@ -1,41 +1,46 @@
-<div class="notes-tree-container" fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="4">
+<div *ngFor=" let data_node of data">
+  <div class="notes-tree-container" fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="4">
 
-  <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="notes-tree-section">
-    <!-- This is the tree node template for leaf nodes -->
-    <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="8">
+    <div *ngIf=" !data_node.children || data_node.children.length == 0">
       <li fxLayout="column" fxLayoutAlign="center stretch" fxLayoutGap="8">
         <!-- use a disabled button to provide padding for tree leaf -->
-        <div class="notes-tree-node" fxLayout="row" fxLayoutAlign="start center" 
-          (click)="getSelected(node)"  [ngClass]="{'notes-tree-node-selected': node_selected && node_selected.name == node.name}">
-          <button mat-icon-button  *ngIf="node.name != ''" class="notes-tree-leave" [ngClass]="{'notes-tree-node-selected': node_selected && node_selected.name == node.name}">
-            <span>{{node.name}}</span>
+        <div class="notes-tree-node" fxLayout="row" fxLayoutAlign="start center" (click)="getSelected(data_node)"
+          [ngClass]="{'notes-tree-node-selected': node_selected && node_selected.name == data_node.name}">
+          <button mat-icon-button *ngIf="data_node.name != ''" class="notes-tree-leave"
+            [ngClass]="{'notes-tree-node-selected': node_selected && node_selected.name == data_node.name, 
+                        'notes-tree-leave': !node_selected || node_selected.name != data_node.name}">
+            <span>{{data_node.name}}</span>
           </button>
-          <mat-form-field appearance="outline" *ngIf="node.name == ''">
-            <input matInput placeholder="Note Name" size="20" />
-          </mat-form-field>
+          <div *ngIf="data_node.name == ''" class="notes-tree-leave" 
+            [ngClass]="{'notes-tree-node-selected': node_selected && node_selected.name == data_node.name}">
+            <input #note_name_input id="note_name_input" placeholder="Note Name" (keyup.Enter)="renameNode()" type="text"
+              [(ngModel)]="new_node_name" class="notes-tree-node-name notes-tree-node-selected" />
+          </div>
         </div>
-        
+
       </li>
-    </mat-tree-node>
+    </div>
 
     <!-- This is the tree node template for expandable nodes -->
-    <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
-      <li  fxLayout="column" fxLayoutAlign="start stretch">
-        <div class="notes-tree-node" fxLayout="row" fxLayoutAlign="start center" >
-          <button  matTreeNodeToggle class="notes-tree-button" (click)="getSelected(node)"
-            [attr.aria-label]="'toggle ' + node.name" [ngClass]="{'notes-tree-node-selected': node_selected && node_selected.name == node.name}" >
-            <mat-icon class="notes-tree-icon" >
-              {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+    <div *ngIf=" data_node.children && data_node.children.length > 0">
+      <li fxLayout="column" fxLayoutAlign="start stretch">
+        <div class="notes-tree-node" fxLayout="row" fxLayoutAlign="start center">
+          <button class="notes-tree-button" (click)="getSelected(data_node)"
+            [attr.aria-label]="'toggle ' + data_node.name"
+            [ngClass]="{'notes-tree-node-selected': node_selected && node_selected.name == data_node.name}">
+            <mat-icon class="notes-tree-icon">
+              {{data_node.selected ? 'expand_more' : 'chevron_right'}}
             </mat-icon>
-            <span>{{node.name}}</span>
+            <span>{{data_node.name}}</span>
           </button>
-          
+
         </div>
-        <ul [class.notes-tree-section-invisible]="!treeControl.isExpanded(node)">
-          <ng-container matTreeNodeOutlet></ng-container>
+        <ul [class.notes-tree-section-invisible]="!data_node.selected" class="notes-tree-parent">
+          <app-notes-tree [data]="data_node.children"></app-notes-tree>
         </ul>
       </li>
-    </mat-nested-tree-node>
+    </div>
 
-  </mat-tree>
+
+  </div>
 </div>
