@@ -8,8 +8,14 @@
 
 .app-nav{
     background: lavender;
+    min-width: 100px;
+    box-sizing: border-box; 
+    flex: 1 1 auto;
 }
 
 .app-data{
     background: ivory;
+    box-sizing: border-box;
+    flex: 3 3 auto;
+    border-left: 1px solid gray; 
 }

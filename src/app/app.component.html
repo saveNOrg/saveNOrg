@@ -1,13 +1,15 @@
-<div class="app-container" fxLayout="column" fxLayoutAlign="start stretch" >
+<div class="app-container" fxLayout="column" fxLayoutAlign="start stretch">
   <app-toolbar class="app-buttons"></app-toolbar>
-   
-  <div class="app-content" fxLayout="row" fxLayoutAlign="start stretch" >
-    <div fxFlex="20" class="app-nav">
-      <app-notes-tree [data]="TREE_DATA"></app-notes-tree>
+
+  <div class="app-content" fxLayout="row" fxLayoutAlign="start stretch">
+    <div class="app-nav">
+      <app-notes-tree [data]="NOTES_DATA"></app-notes-tree>
     </div>
-    <div fxFlex="80" class="app-data">
-      <app-notes-data></app-notes-data>
+    <div class="app-data" mwlResizable (resizeEnd)="onResizeEnd($event)" 
+      [resizeEdges]="{ left: true }" [ngStyle]="style">
+      <app-welcome *ngIf="NOTES_DATA.length == 0"></app-welcome>
+      <app-notes-data *ngIf="NOTES_DATA.length > 0"></app-notes-data>
     </div>
   </div>
-  
+
 </div>

@@ -8,18 +8,21 @@ import {MatInputModule} from '@angular/material/input';
 import {MatTreeModule} from '@angular/material/tree';
 import { QuillModule } from 'ngx-quill'
 import { FormsModule } from '@angular/forms';
+import { ResizableModule } from 'angular-resizable-element';
 
 import { AppComponent } from './app.component';
 import { ToolbarComponent } from './component/toolbar/toolbar.component';
 import { NotesTreeComponent } from './component/notes-tree/notes-tree.component';
 import { NotesDataComponent } from './component/notes-data/notes-data.component';
+import { WelcomeComponent } from './component/welcome/welcome.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ToolbarComponent,
     NotesTreeComponent,
-    NotesDataComponent
+    NotesDataComponent,
+    WelcomeComponent
   ],
   imports: [
     BrowserModule,
@@ -30,7 +33,8 @@ import { NotesDataComponent } from './component/notes-data/notes-data.component'
     MatInputModule,
     MatTreeModule,
     QuillModule.forRoot(),
-    FormsModule
+    FormsModule,
+    ResizableModule
   ],
   providers: [],
   bootstrap: [AppComponent]

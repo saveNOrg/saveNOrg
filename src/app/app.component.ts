@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { NotesNode } from './component/notes-tree/notes-tree-datasource';
+import { ResizeEvent } from 'angular-resizable-element';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -7,7 +9,9 @@ import { NotesNode } from './component/notes-tree/notes-tree-datasource';
 })
 export class AppComponent {
   title = 'myLifeNotes';
-  TREE_DATA: NotesNode[] = [
+  public style: object = {};
+  NOTES_DATA: NotesNode[] = [];
+  /*[
     {
       name: 'Fruit',
       level:1,
@@ -34,5 +38,15 @@ export class AppComponent {
         },
       ]
     },
-  ];
+  ]; */
+  onResizeEnd(event: ResizeEvent): void {
+
+    this.style = {
+      position: 'fixed',
+      left: `${event.rectangle.left}px`,
+      top: `${event.rectangle.top}px`,
+      width: `${event.rectangle.width}px`,
+      height: `${event.rectangle.height}px`
+    };
+  }
 }
