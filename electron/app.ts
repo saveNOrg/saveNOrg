@@ -86,4 +86,14 @@ ipcMain.on("navigateDirectory", (event, path) => {
 ipcMain.on("saveData", (event, note_name, note_data) => {
   console.log("note_name ", note_name);
   console.log("note_data ", note_data);
+  if (!fs.existsSync( path.join(__dirname, 'data' ) )){
+    fs.mkdirSync( path.join(__dirname, 'data' ) );
+  }
+  
+  let file_name = path.join(__dirname, 'data', note_name );
+
+  fs.writeFile(file_name, JSON.stringify(note_data), function (err) {
+    if (err) return console.log(err);
+    console.log(note_data +' > '+ file_name);
+  });
 });

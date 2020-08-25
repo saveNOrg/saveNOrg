@@ -53,6 +53,7 @@ export class NotesTreeComponent implements OnInit {
           setTimeout(() => { // this will make the execution after the above boolean has changed
             (<HTMLInputElement>document.getElementById("note_name_input")).focus();
           }, 0);
+
         } else {
           if (this.node_selected) {
             let index = this.data.findIndex(node => node.name == this.node_selected.name && node.level == this.node_selected.level);
@@ -68,6 +69,7 @@ export class NotesTreeComponent implements OnInit {
             }
           }
         }
+        this.getSelected(this.node_selected)
         break;
       }
       case 'delete': {
