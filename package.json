@@ -1,14 +1,14 @@
 {
   "name": "my-life-notes",
   "version": "0.0.0",
-  "main": "./dist/electron/main.js",
+  "main": "./dist/electron/app.js",
   "scripts": {
     "ng": "ng",
     "start": "electron-forge start",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "electron": "ng build --base-href ./ && tsc --p electron && electron ./dist/electron/main.js",
+    "electron": "ng build --base-href ./ && tsc --p electron && electron ./dist/electron/app.js",
     "e2e": "ng e2e",
     "package": "electron-forge package",
     "make": "electron-forge make"

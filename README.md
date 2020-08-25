@@ -4,8 +4,8 @@ This is a weekend project so far. The idea is to create a notes application that
 
 This project uses Angular, FlexBox, Quill (ngx-quill), Electron, Electon-forge, etc, etc. This is to say that it is more of a compilation of technologies rather than building from scratch. To see all the technologies used look at the package.json file.
 
-The icon came from: https://www.iconhot.com/icon/fire-toolbar/notes-8.html (free for none comercial use)
-
+The icon came from: https://www.1001freedownloads.com/free-icon/blank-catalog (Blank-Catalog, Free Icon by LazyCrazy, free for comercial use)
+The font came from: https://www.1001fonts.com/otto-font.html
 
 ## Development 
 
