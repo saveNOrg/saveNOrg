@@ -8,18 +8,19 @@ let win: BrowserWindow;
 function createWindow() {
   win = new BrowserWindow({ "width": 800, "height": 600,
     "title": "My Life Notes...",
-    "icon": path.join(__dirname,`./myLifeNotes/favicon.ico`),
+    "icon": path.join(__dirname,`./favicon.ico`),
     webPreferences: {
       nodeIntegration: true
     } });
 
   win.loadURL(
     url.format({
-      pathname: path.join(__dirname, `./myLifeNotes/index.html`),
+      pathname: path.join(__dirname, `./index.html`),
       protocol: "file:",
       slashes: true
     })
   );
+  console.log("Otto: ", fs.readFileSync(path.join(__dirname, `./assets/fonts/Otto/Otto.ttf`) ) );
 
   win.webContents.openDevTools();
 

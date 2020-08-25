@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { ElectronService } from 'src/app/service/electron.service';
+import { ElectronService } from '../../service/electron.service';
 import { NotesActionService } from "../../service/notes-action.service";
 
 @Component({
