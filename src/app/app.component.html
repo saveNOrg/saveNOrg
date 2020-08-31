@@ -3,12 +3,12 @@
 
   <div class="app-content" fxLayout="row" fxLayoutAlign="start stretch">
     <div class="app-nav">
-      <app-notes-tree [data]="NOTES_DATA"></app-notes-tree>
+      <app-navigation [data_saved]="NOTES_DATA"></app-navigation>
     </div>
     <div class="app-data" mwlResizable (resizeEnd)="onResizeEnd($event)" 
       [resizeEdges]="{ left: true }" [ngStyle]="style">
-      <app-welcome *ngIf="NOTES_DATA.length == 0"></app-welcome>
-      <app-notes-data *ngIf="NOTES_DATA.length > 0"></app-notes-data>
+      <app-welcome *ngIf="!isSelected"></app-welcome>
+      <app-data *ngIf="isSelected"></app-data>
     </div>
   </div>
 

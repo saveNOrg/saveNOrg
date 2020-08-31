@@ -9,8 +9,8 @@ import { IpcRenderer } from 'electron';
 export class ElectronService {
 
   private ipc: IpcRenderer
-  images = new BehaviorSubject<string[]>([]);
-  directory = new BehaviorSubject<string[]>([]);
+  notes = new BehaviorSubject<string[]>([]);
+  data = new BehaviorSubject<any>({});
 
   constructor() {
     if ((<any>window).require) {
@@ -30,11 +30,23 @@ export class ElectronService {
     // this.ipc.on('getDirectoryResponse', (event, directory) => {
     //   this.directory.next(directory);
     // });
+    this.ipc.send('loadNotes');
+    
+    this.ipc.on('getNotesResponse', (event, note) => {
+      this.notes.next(note);
+      console.log("available notes ", note);
+    });
+    
+    this.ipc.on('getNoteDataResponse', (event, data) => {
+      console.log("available notes ", data);
+      this.data.next(data);
+      console.log("available notes ", data);
+    });
   }
 
-  navigateDirectory(path) {
+  getNote(note_name:string) {
     //electron.ipcRenderer
-    this.ipc.send('navigateDirectory', path);
+    this.ipc.send('openNotes', note_name);
   }
 
   saveData( note_name: string, note_data: any){

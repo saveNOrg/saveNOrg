@@ -1,0 +1,47 @@
+<div *ngFor=" let data_node of data">
+  <div class="navigation-container" fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="4">
+
+    <div *ngIf=" !data_node.children || data_node.children.length == 0">
+      <li fxLayout="column" fxLayoutAlign="center stretch" fxLayoutGap="8">
+        <!-- use a disabled button to provide padding for tree leaf -->
+        <div class="navigation-node" fxLayout="row" fxLayoutAlign="start center" (click)="getSelected(data_node)"
+          [ngClass]="{'navigation-node-selected': node_selected && node_selected.label == data_node.label}">
+          <button mat-icon-button *ngIf="data_node.label != ''" class="navigation-leave"
+            [ngClass]="{'navigation-node-selected': node_selected && node_selected.label == data_node.label, 
+                        'navigation-leave': !node_selected || node_selected.label != data_node.label}">
+            <span>{{data_node.label}}</span>
+          </button>
+          <div *ngIf="data_node.label == ''" class="navigation-leave" 
+            [ngClass]="{'navigation-node-selected': node_selected && node_selected.label == data_node.label}">
+            <input #note_name_input id="note_name_input" placeholder="Note Name" (keyup.Enter)="renameNode()" type="text"
+              (focusout)="renameNode()"
+              [(ngModel)]="new_node_name" class="navigation-node-name navigation-node-selected" />
+          </div>
+        </div>
+
+      </li>
+    </div>
+
+    <!-- This is the tree node template for expandable nodes -->
+    <div *ngIf=" data_node.children && data_node.children.length > 0">
+      <li fxLayout="column" fxLayoutAlign="start stretch">
+        <div class="navigation-node" fxLayout="row" fxLayoutAlign="start center">
+          <button class="navigation-button" (click)="getSelected(data_node)"
+            [attr.aria-label]="'toggle ' + data_node.label"
+            [ngClass]="{'navigation-node-selected': node_selected && node_selected.label == data_node.label}">
+            <mat-icon class="navigation-icon">
+              {{data_node.selected ? 'expand_more' : 'chevron_right'}}
+            </mat-icon>
+            <span>{{data_node.label}}</span>
+          </button>
+
+        </div>
+        <ul [class.navigation-section-invisible]="!data_node.selected" class="navigation-parent">
+          <app-navigation [data_saved]="data_node.children"></app-navigation>
+        </ul>
+      </li>
+    </div>
+
+
+  </div>
+</div>

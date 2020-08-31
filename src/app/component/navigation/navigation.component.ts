@@ -1,28 +1,34 @@
 import { Component, OnInit, ViewEncapsulation, Input } from '@angular/core';
-import { NestedTreeControl } from '@angular/cdk/tree';
-import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { NotesActionService } from "../../service/notes-action.service";
-import { NotesTreeDataSource, NotesNode } from './notes-tree-datasource';
+import { NotesTreeDataSource } from './navigation-datasource';
 import { SelectedNodeService } from '../../service/selected-node.service';
+import { NotesNodeImp } from '../../utils/notes-node';
+import { ElectronService } from '../../service/electron.service';
 
 @Component({
-  selector: 'app-notes-tree',
-  templateUrl: './notes-tree.component.html',
-  styleUrls: ['./notes-tree.component.scss'],
+  selector: 'app-navigation',
+  templateUrl: './navigation.component.html',
+  styleUrls: ['./navigation.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
 export class NotesTreeComponent implements OnInit {
 
   message: string = '';
   new_node_name: string = '';
-  node_selected: NotesNode;
-  @Input() data: NotesNode[] = [{ name: '', level: 1 }];
+  node_selected: NotesNodeImp;
+  data: NotesNodeImp[]=[];
+  @Input() 
+  set data_saved (d: NotesNodeImp[]){
+    console.log("data1 " , d)
+    this.data = d;
+  }// = [new NotesNodeImp(1)];
   dataSource: NotesTreeDataSource;
 
 
 
   constructor(private action_service: NotesActionService,
-    private select_service: SelectedNodeService) {
+    private select_service: SelectedNodeService,
+    private os_service: ElectronService) {
     this.dataSource = new NotesTreeDataSource();
   }
 
@@ -39,21 +45,20 @@ export class NotesTreeComponent implements OnInit {
 
   getSelected(event) {
     event.selected = !event.selected;
-    console.log("event ", event)
+    console.log("getSelected ", event)
     this.select_service.changeSelectedNode(event);
+    this.os_service.getNote(event.name);
   }
+
+
 
   exec_action(action: string) {
     switch (action) {
       case 'add': {
         console.log("adding ", this.node_selected)
-        if (this.data.length == 0 && this.node_selected == null) {
-          this.data.push({ name: "", level: 1, selected: true });
-          this.node_selected = { name: "", level: 1, selected: true };
-          setTimeout(() => { // this will make the execution after the above boolean has changed
-            (<HTMLInputElement>document.getElementById("note_name_input")).focus();
-          }, 0);
 
+        if (this.data.length == 0 && this.node_selected == null) {
+          this.addNode(1);
         } else {
           if (this.node_selected) {
             let index = this.data.findIndex(node => node.name == this.node_selected.name && node.level == this.node_selected.level);
@@ -61,15 +66,11 @@ export class NotesTreeComponent implements OnInit {
               if (!this.data[index].children) {
                 this.data[index].children = []
               }
-              this.data[index].children.push({ name: "", level: this.node_selected.level + 1, selected: true });
-              this.node_selected = { name: "", level: this.node_selected.level + 1, selected: true };
-              setTimeout(() => { // this will make the execution after the above boolean has changed
-                (<HTMLInputElement>document.getElementById("note_name_input")).focus();
-              }, 0);
+              this.addNode(this.node_selected.level + 1); 
             }
           }
         }
-        this.getSelected(this.node_selected)
+
         break;
       }
       case 'delete': {
@@ -83,14 +84,19 @@ export class NotesTreeComponent implements OnInit {
     }
   }
 
-  find_parent() {
-
+  addNode(level:number) {
+    this.data.push(new NotesNodeImp(level, false));
+    this.node_selected = new NotesNodeImp(level, false);
+    this.getSelected(this.node_selected)
+    setTimeout(() => { // this will make the execution after the above boolean has changed
+      (<HTMLInputElement>document.getElementById("note_name_input")).focus();
+    }, 0);
   }
 
   renameNode() {
     console.log("event ", this.data)
-    let selected = this.data.find(ren_node => ren_node.name == '');
-    selected.name = this.new_node_name;
+    let selected = this.data.find(ren_node => ren_node.label == '');
+    selected.setLabel(this.new_node_name);
     selected.selected = false;
     this.getSelected(selected);
   }

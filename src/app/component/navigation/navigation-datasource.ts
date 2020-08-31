@@ -1,11 +1,6 @@
 import { CheckboxControlValueAccessor } from '@angular/forms';
-
-export interface NotesNode {
-  name: string;
-  level: number;
-  selected?:boolean;
-  children?: NotesNode[];
-}
+import { NotesNode } from '../../utils/model';
+import { NotesNodeImp } from '../../utils/notes-node';
 
 export class NotesTreeDataSource {
   
