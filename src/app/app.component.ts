@@ -1,17 +1,20 @@
-import { Component } from '@angular/core';
-import { NotesNode } from './component/notes-tree/notes-tree-datasource';
+import { Component, OnInit } from '@angular/core';
+import { NotesNodeImp } from './utils/notes-node';
 import { ResizeEvent } from 'angular-resizable-element';
+import { ElectronService } from './service/electron.service';
+import { SelectedNodeService } from './service/selected-node.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit{
   title = 'myLifeNotes';
   public style: object = {};
-  NOTES_DATA: NotesNode[] = [];
-  /*[
+  isSelected:boolean=false;
+  NOTES_DATA: NotesNodeImp[]=[];/* = 
+  [
     {
       name: 'Fruit',
       level:1,
@@ -38,7 +41,29 @@ export class AppComponent {
         },
       ]
     },
-  ]; */
+  ];*/
+  
+  ngOnInit(){
+    this.electron_service.notes.subscribe( notes =>{
+      console.log("app.component notes ", notes);
+      notes.forEach( note => {
+        let name_parts = note.split('-'); 
+        let notesObj =new NotesNodeImp(Number.parseInt(name_parts[0]));
+        notesObj.name = note;
+        notesObj.label = name_parts[1];
+        this.NOTES_DATA.push(notesObj);
+        this.NOTES_DATA = Object.assign([], this.NOTES_DATA);
+      });
+    })
+    this.select_service.currentNode.subscribe(node => this.isSelected = node!=null)
+  }
+
+
+  constructor(private electron_service: ElectronService,
+              private select_service: SelectedNodeService){
+    
+  }
+  
   onResizeEnd(event: ResizeEvent): void {
 
     this.style = {
@@ -48,5 +73,5 @@ export class AppComponent {
       width: `${event.rectangle.width}px`,
       height: `${event.rectangle.height}px`
     };
-  }
+  } 
 }

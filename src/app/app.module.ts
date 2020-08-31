@@ -12,8 +12,8 @@ import { ResizableModule } from 'angular-resizable-element';
 
 import { AppComponent } from './app.component';
 import { ToolbarComponent } from './component/toolbar/toolbar.component';
-import { NotesTreeComponent } from './component/notes-tree/notes-tree.component';
-import { NotesDataComponent } from './component/notes-data/notes-data.component';
+import { NotesTreeComponent } from './component/navigation/navigation.component';
+import { NotesDataComponent } from './component/data/data.component';
 import { WelcomeComponent } from './component/welcome/welcome.component';
 
 @NgModule({

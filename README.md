@@ -9,6 +9,8 @@ The font came from: https://www.1001fonts.com/otto-font.html
 
 ## Development 
 
+Run `npm install` to install all the dependencies. 
+
 When working only on the UI side you can use `ng serve` and navigate to `http://localhost:4200/`.
 
 When working on the backend and front-end use `npm run electron`. The app will automatically start in developer mode.

@@ -4,13 +4,14 @@ import * as url from "url";
 import * as fs from "fs";
 
 let win: BrowserWindow;
-
+const DATA_DIR = path.join(__dirname, 'data' );
 function createWindow() {
   win = new BrowserWindow({ "width": 800, "height": 600,
     "title": "My Life Notes...",
     "icon": path.join(__dirname,`./favicon.ico`),
     webPreferences: {
-      nodeIntegration: true
+      nodeIntegration: true,
+      worldSafeExecuteJavaScript: true
     } });
 
   win.loadURL(
@@ -20,8 +21,6 @@ function createWindow() {
       slashes: true
     })
   );
-  console.log("Otto: ", fs.readFileSync(path.join(__dirname, `./assets/fonts/Otto/Otto.ttf`) ) );
-
   win.webContents.openDevTools();
 
   win.on("closed", () => {
@@ -46,54 +45,48 @@ app.on('window-all-closed', () => {
   }
 });
 
-function getImages() {
-  const cwd = process.cwd();
-  fs.readdir('.', {withFileTypes: true}, (err, files) => {
-      if (!err) {
-          const re = /(?:\.([^.]+))?$/;
-          const images = files
-            .filter(file => file.isFile() && ['jpg', 'png'].includes(re.exec(file.name)[1]))
-            .map(file => `file://${cwd}/${file.name}`);
-          win.webContents.send("getImagesResponse", images);
-      }
-  });
+function getNotes() {
+  if ( fs.existsSync( DATA_DIR ) ){
+    let files = fs.readdirSync(DATA_DIR, {withFileTypes: true}, );
+    let notes = files.map(file => `${file.name}`);
+    win.webContents.send("getNotesResponse", notes);  
+  }
 }
 
-function isRoot() {
-    return path.parse(process.cwd()).root == process.cwd();
-}
-
-function getDirectory() {
-  fs.readdir('.', {withFileTypes: true}, (err, files) => {
-      if (!err) {
-          const directories = files
-            .filter(file => file.isDirectory())
-            .map(file => file.name);
-          if (!isRoot()) {
-              directories.unshift('..');
-          }
-          win.webContents.send("getDirectoryResponse", directories);
-      }
-  });
-}
-
-ipcMain.on("navigateDirectory", (event, path) => {
-  process.chdir(path);
-  getImages();
-  getDirectory();
+ipcMain.on("loadNotes", (event) => {
+  getNotes();
 });
 
 ipcMain.on("saveData", (event, note_name, note_data) => {
   console.log("note_name ", note_name);
   console.log("note_data ", note_data);
-  if (!fs.existsSync( path.join(__dirname, 'data' ) )){
-    fs.mkdirSync( path.join(__dirname, 'data' ) );
+  if (!fs.existsSync( DATA_DIR )){
+    fs.mkdirSync( DATA_DIR );
   }
   
-  let file_name = path.join(__dirname, 'data', note_name );
+  let file_name = path.join(DATA_DIR, note_name );
 
-  fs.writeFile(file_name, JSON.stringify(note_data), function (err) {
+  fs.writeFile(file_name, JSON.stringify(note_data),  'utf-8', function (err) {
     if (err) return console.log(err);
     console.log(note_data +' > '+ file_name);
   });
 });
+
+ipcMain.on("openNotes", (event, note_name) => {
+  getData(note_name);
+});
+
+function getData(note_name:string) {
+
+  let file_name = path.join(DATA_DIR, note_name );
+  if (fs.existsSync( file_name )){
+    try {
+      const data = fs.readFileSync(file_name,'utf-8');
+      win.webContents.send("getNoteDataResponse", data);
+      console.log(data)
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+}
