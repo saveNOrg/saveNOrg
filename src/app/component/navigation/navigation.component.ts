@@ -1,9 +1,8 @@
 import { Component, OnInit, ViewEncapsulation, Input } from '@angular/core';
 import { NotesActionService } from "../../service/notes-action.service";
-import { NotesTreeDataSource } from './navigation-datasource';
 import { SelectedNodeService } from '../../service/selected-node.service';
 import { NotesNodeImp } from '../../utils/notes-node';
-import { ElectronService } from '../../service/electron.service';
+import { ElectronService } from '../../service/electron.service.data';
 
 @Component({
   selector: 'app-navigation',
@@ -17,19 +16,17 @@ export class NotesTreeComponent implements OnInit {
   new_node_name: string = '';
   node_selected: NotesNodeImp;
   data: NotesNodeImp[]=[];
-  @Input() 
+
+  @Input('data_saved') 
   set data_saved (d: NotesNodeImp[]){
     console.log("data1 " , d)
     this.data = d;
-  }// = [new NotesNodeImp(1)];
-  dataSource: NotesTreeDataSource;
-
+  }
 
 
   constructor(private action_service: NotesActionService,
     private select_service: SelectedNodeService,
     private os_service: ElectronService) {
-    this.dataSource = new NotesTreeDataSource();
   }
 
   ngOnInit() {

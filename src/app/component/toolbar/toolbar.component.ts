@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { ElectronService } from '../../service/electron.service';
 import { NotesActionService } from "../../service/notes-action.service";
 
 @Component({
@@ -12,8 +11,7 @@ export class ToolbarComponent implements OnInit {
 
   message:string='';
 
-  constructor( private electron_service: ElectronService,
-               private action_service: NotesActionService) { }
+  constructor( private action_service: NotesActionService) { }
 
   ngOnInit(): void {
     this.action_service.currentMessage.subscribe(message => this.message = message)

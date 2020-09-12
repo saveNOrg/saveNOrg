@@ -4,23 +4,55 @@ import * as url from "url";
 import * as fs from "fs";
 
 let win: BrowserWindow;
+
 const DATA_DIR = path.join(__dirname, 'data' );
+
+function getNotes() {
+  if ( fs.existsSync( DATA_DIR ) ){
+    let files = fs.readdirSync(DATA_DIR, {withFileTypes: true}, );
+    let notes = files.map(file => `${file.name}`);
+    win.webContents.send("getNotesResponse", notes);  
+  }
+}
+
+function getData(note_name:string) {
+
+  let file_name = path.join(DATA_DIR, note_name );
+  if (fs.existsSync( file_name )){
+    try {
+      const data = fs.readFileSync(file_name,'utf-8');
+      win.webContents.send("getNoteDataResponse", data);
+      console.log(data)
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+}
+
 function createWindow() {
-  win = new BrowserWindow({ "width": 800, "height": 600,
-    "title": "My Life Notes...",
-    "icon": path.join(__dirname,`./favicon.ico`),
-    webPreferences: {
-      nodeIntegration: true,
-      worldSafeExecuteJavaScript: true
-    } });
+  
+  win = new BrowserWindow(
+    { 
+      "width": 800, "height": 600,
+      "title": "My Life Notes...",
+      "icon": path.join(__dirname,`./favicon.ico`),
+      webPreferences: {
+        "devTools": true,
+        "nodeIntegration": true,
+        "worldSafeExecuteJavaScript": true
+      } 
+    }
+  );
 
   win.loadURL(
     url.format({
-      pathname: path.join(__dirname, `./index.html`),
-      protocol: "file:",
-      slashes: true
+      "pathname": path.join(__dirname, `./index.html`),
+      "protocol": "file:",
+      "slashes": true
     })
   );
+
   win.webContents.openDevTools();
 
   win.on("closed", () => {
@@ -36,6 +68,7 @@ app.on("activate", () => {
   }
 });
 
+
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
   // On macOS it is common for applications and their menu bar
@@ -44,14 +77,6 @@ app.on('window-all-closed', () => {
     app.quit()
   }
 });
-
-function getNotes() {
-  if ( fs.existsSync( DATA_DIR ) ){
-    let files = fs.readdirSync(DATA_DIR, {withFileTypes: true}, );
-    let notes = files.map(file => `${file.name}`);
-    win.webContents.send("getNotesResponse", notes);  
-  }
-}
 
 ipcMain.on("loadNotes", (event) => {
   getNotes();
@@ -75,18 +100,3 @@ ipcMain.on("saveData", (event, note_name, note_data) => {
 ipcMain.on("openNotes", (event, note_name) => {
   getData(note_name);
 });
-
-function getData(note_name:string) {
-
-  let file_name = path.join(DATA_DIR, note_name );
-  if (fs.existsSync( file_name )){
-    try {
-      const data = fs.readFileSync(file_name,'utf-8');
-      win.webContents.send("getNoteDataResponse", data);
-      console.log(data)
-    } catch (err) {
-      console.error(err)
-    }
-  }
-
-}
