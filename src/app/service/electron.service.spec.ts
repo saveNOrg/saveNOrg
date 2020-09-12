@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { ElectronService } from './electron.service';
+import { ElectronService } from './electron.service.files';
 
 describe('ElectronService', () => {
   let service: ElectronService;

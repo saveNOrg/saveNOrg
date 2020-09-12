@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { EditorChangeContent, EditorChangeSelection } from 'ngx-quill'
 import Quill from 'quill'
-import { ElectronService } from '../../service/electron.service';
+import { ElectronService } from '../../service/electron.service.data';
 import { SelectedNodeService } from '../../service/selected-node.service';
 import { interval, Subscription } from 'rxjs';
 
@@ -37,9 +37,6 @@ export class NotesDataComponent implements OnInit {
           setTimeout(() => {
           (<HTMLInputElement>document.getElementById("note_editor")).focus();
           }, 0);
-          //let editor_container = <HTMLInputElement>document.getElementById("note_editor");
-          //this.editor = new Quill(editor_container);
-          //console.log("editor " , editor)
           this.data = data;
           if( this.editor){
             this.updateData();
@@ -81,10 +78,9 @@ export class NotesDataComponent implements OnInit {
 
   changedEditor($event: EditorChangeContent | EditorChangeSelection) {
     // tslint:disable-next-line:no-console
-    console.log('editor-change', $event)
-    console.log('editor ', this.editor.getContents());
+    //console.log('editor-change', $event)
+    //console.log('editor ', this.editor.getContents());
     this.data = this.editor.getContents();
-    //this.os_service.saveData(this.note_name, this.editor.getContents());
     this.changed = true;
   }
 
