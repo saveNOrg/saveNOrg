@@ -74,6 +74,10 @@ export class NotesTreeComponent implements OnInit {
         //statements; 
         break;
       }
+      case 'edit': {
+        //statements; 
+        break;
+      }
       default: {
         //save statements; 
         break;
@@ -93,9 +97,26 @@ export class NotesTreeComponent implements OnInit {
   renameNode() {
     console.log("event ", this.data)
     let selected = this.data.find(ren_node => ren_node.label == '');
-    selected.setLabel(this.new_node_name);
+    if( this.new_node_name == ''){
+      selected.setLabel('Note_'+this.getFormattedDate());
+    }else{
+      selected.setLabel(this.new_node_name);
+      this.new_node_name = '';
+    }
+    this.action_service.changeMessage('updated');
     selected.selected = false;
     this.getSelected(selected);
+  }
+
+  getFormattedDate(){
+    let date = new Date();
+    let month = date.getMonth() < 10 ? '0'+(date.getMonth()+1):(date.getMonth()+1);
+    let day = date.getDate() < 10 ? '0'+ date.getDate():date.getDate();
+    let hour = date.getHours() < 10 ? '0'+date.getHours():date.getHours();
+    let minutes = date.getMinutes() < 10 ? '0'+date.getMinutes(): date.getMinutes();
+    let seconds = date.getSeconds() < 10 ? '0'+date.getSeconds(): date.getSeconds();
+    let string_date =  month+'-'+day+'-'+hour+':'+minutes+':'+seconds;
+    return string_date;
   }
 
 }

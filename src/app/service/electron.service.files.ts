@@ -12,28 +12,31 @@ export class ElectronServiceFile {
   private ipc: IpcRenderer
   notes = new BehaviorSubject<string[]>([]);
   data = new BehaviorSubject<any>({});
+  inside_electron:boolean=true;
 
   constructor() {
     if ((<any>window).require) {
       try {
         this.ipc = (<any>window).require('electron').ipcRenderer;
+        this.ipc.on('getNotesResponse', (event, notes) => {
+          console.log("available notes ", notes);
+          this.notes.next(notes);
+        });
       } catch (e) {
         throw e;
       }
     } else {
       console.warn('App not running inside Electron!');
+      this.inside_electron = false;
     }
-    
-    this.ipc.on('getNotesResponse', (event, notes) => {
-      console.log("available notes ", notes);
-      this.notes.next(notes);
-    });
     
   }
 
   loadFiles(){
     console.log('load files: ');
-    this.ipc.send('loadNotes');
+    if( this.inside_electron ){
+      this.ipc.send('loadNotes');
+    }
   }
 
 }

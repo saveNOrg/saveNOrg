@@ -11,11 +11,12 @@
                         'navigation-leave': !node_selected || node_selected.label != data_node.label}">
             <span>{{data_node.label}}</span>
           </button>
-          <div *ngIf="data_node.label == ''" class="navigation-leave" 
-            [ngClass]="{'navigation-node-selected': node_selected && node_selected.label == data_node.label}">
-            <input #note_name_input id="note_name_input" placeholder="Note Name" (keyup.Enter)="renameNode()" type="text"
-              (focusout)="renameNode()"
-              [(ngModel)]="new_node_name" class="navigation-node-name navigation-node-selected" />
+          <div *ngIf="data_node.label == ''" 
+            [ngClass]="{'navigation-node-selected': node_selected && node_selected.label == data_node.label,
+                        'navigation-leave': !(node_selected && node_selected.label == data_node.label)}">
+            <input #note_name_input id="note_name_input" placeholder="Note Name" (keyup.Enter)="renameNode()" 
+              type="text" (focusout)="renameNode()" [(ngModel)]="new_node_name" 
+              class="navigation-node-name navigation-node-selected" />
           </div>
         </div>
 
