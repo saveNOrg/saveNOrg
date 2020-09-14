@@ -1,21 +1,30 @@
 <div class="toolbar-container" fxLayout="column" fxLayoutAlign="center stretch" >
     <div fxLayout="row" fxLayoutAlign="space-between center">
         <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="4"  class="toolbar-button">
-            <button mat-icon-button aria-label="Add note" class="toolbar-btn" (click)="addNote()">
+            <button mat-icon-button aria-label="Add note" class="toolbar-btn" 
+                (click)="addNote()" fxLayout="column" fxLayoutAlign="center center" 
+                [ngClass]="{'toolbar-btn-selected': message=='add'}">
                 <mat-icon>note_add</mat-icon>
+                <span>Add</span>
             </button>
-            <button mat-icon-button aria-label="Delete note" class="toolbar-btn" (click)="deleteNote()">
+            <button mat-icon-button aria-label="Delete note" class="toolbar-btn" 
+                (click)="deleteNote()" fxLayout="column" fxLayoutAlign="center center" 
+                [ngClass]="{'toolbar-btn-selected': message=='delete'}">
                 <mat-icon>delete</mat-icon>
+                <span>Remove</span>
             </button>
-            <button mat-icon-button aria-label="Save note" class="toolbar-btn" (click)="saveNote()">
-                <mat-icon>save</mat-icon>
+            <button mat-icon-button aria-label="Rename note" class="toolbar-btn" 
+                (click)="editNote()" fxLayout="column" fxLayoutAlign="center center" 
+                [ngClass]="{'toolbar-btn-selected': message=='edit'}">
+                <mat-icon>edit</mat-icon>
+                <span>Rename</span>
             </button>
         </div>
         <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="4"  class="toolbar-search">
 
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" floatLabel="never" >
                 <mat-label>Search</mat-label>
-                <input matInput placeholder="Search" size="20" />
+                <input matInput placeholder="Search" size="20" class="toolbar-input"/>
                 <mat-icon aria-hidden="false" aria-label="Search notes" matSuffix>search</mat-icon>
             </mat-form-field>
         </div>

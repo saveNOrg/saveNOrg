@@ -17,19 +17,23 @@ export class ToolbarComponent implements OnInit {
     this.action_service.currentMessage.subscribe(message => this.message = message)
   }
 
-  saveNote(){
-    console.log("saving the note");
-    this.action_service.changeMessage("save")
+  editNote(){
+    if( this.message != 'edit'){
+      this.action_service.changeMessage("edit")
+    }
   }
 
   addNote(){
-    console.log("saving the note");
-    this.action_service.changeMessage("add")
+    if( this.message != 'add'){
+      this.action_service.changeMessage("add")
+    }
+
   }
 
   deleteNote(){
-    console.log("saving the note");
-    this.action_service.changeMessage("delete")
+    if( this.message != 'delete'){
+      this.action_service.changeMessage("delete")
+    }
   }
 
 }

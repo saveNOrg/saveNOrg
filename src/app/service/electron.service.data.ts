@@ -17,6 +17,10 @@ export class ElectronService {
     if ((<any>window).require) {
       try {
         this.ipc = (<any>window).require('electron').ipcRenderer;
+    
+        this.ipc.on('getNoteDataResponse', (event, data) => {
+          this.data.next(data);
+        });
       } catch (e) {
         throw e;
       }
@@ -24,9 +28,6 @@ export class ElectronService {
       console.warn('App not running inside Electron!');
     }
     
-    this.ipc.on('getNoteDataResponse', (event, data) => {
-      this.data.next(data);
-    });
   }
 
   getNote(note_name:string) {
