@@ -1,5 +1,9 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { NotesActionService } from "../../service/notes-action.service";
+import { NotesNodeImp } from '../../utils/notes-node';
+import { Store } from '@ngrx/store';
+import { AppState } from '../../reducers';
+import { RenameNote, AddNote, DeleteNote, NoteActionTypes } from '../../actions/note.actions';
+import { SaveFile } from '../../actions/file.actions';
 
 @Component({
   selector: 'app-toolbar',
@@ -10,29 +14,33 @@ import { NotesActionService } from "../../service/notes-action.service";
 export class ToolbarComponent implements OnInit {
 
   message:string='';
+  node_selected:NotesNodeImp=null;
 
-  constructor( private action_service: NotesActionService) { }
+
+  constructor( private store_service: Store<AppState> ) { }
 
   ngOnInit(): void {
-    this.action_service.currentMessage.subscribe(message => this.message = message)
+    this.store_service.select(state => state).subscribe( state => {
+      this.node_selected = state.note.note;
+      this.message = state.note.type;
+    });
   }
 
   editNote(){
-    if( this.message != 'edit'){
-      this.action_service.changeMessage("edit")
+    if( this.message != NoteActionTypes.RenameNote && this.node_selected){
+      this.store_service.dispatch(new RenameNote({note: this.node_selected}));
     }
   }
 
   addNote(){
-    if( this.message != 'add'){
-      this.action_service.changeMessage("add")
+    if( this.message != NoteActionTypes.AddNote){
+      this.store_service.dispatch(new AddNote({note: this.node_selected}));
     }
-
   }
 
   deleteNote(){
-    if( this.message != 'delete'){
-      this.action_service.changeMessage("delete")
+    if( this.message != NoteActionTypes.DeleteNote && this.node_selected){
+      this.store_service.dispatch(new DeleteNote({note: this.node_selected}));
     }
   }
 

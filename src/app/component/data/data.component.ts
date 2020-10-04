@@ -2,8 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { EditorChangeContent, EditorChangeSelection } from 'ngx-quill'
 import Quill from 'quill'
 import { ElectronService } from '../../service/electron.service.data';
-import { SelectedNodeService } from '../../service/selected-node.service';
-import { interval, Subscription } from 'rxjs';
+import { interval, Subscription, VirtualTimeScheduler } from 'rxjs';
+import { environment } from '../../../environments/environment';
+import { Store } from '@ngrx/store';
+import { AppState } from '../../reducers';
+import { FileActionTypes, DirtyFile } from '../../actions/file.actions';
+import { NotesNodeImp } from '../../utils/notes-node';
+
 
 @Component({
   selector: 'app-data',
@@ -15,91 +20,111 @@ export class NotesDataComponent implements OnInit {
   editor: Quill;
   blurred = false
   focused = false
-  changed:boolean = false;
-  note_name: string = '';
-  data: any;
+  dirty:boolean = false;
+  node_selected: NotesNodeImp;
+  data: any = null;
   subscription: Subscription;
-  //emit value in sequence every 10 second
-  source = interval(30000);
+  source = interval(environment.save_time);
 
   constructor(private os_service: ElectronService,
-    private select_service: SelectedNodeService) {
+              private store_service: Store<AppState>) {
   }
 
   ngOnInit(): void {
-    this.select_service.currentNode.subscribe(node => {
-      this.note_name = '';
-      if (node) {
-        this.note_name = node.name;
-        this.os_service.data.subscribe(data => {
-          console.log("data read " , data)
-          console.log("editor " , this.editor)
-          setTimeout(() => {
-          (<HTMLInputElement>document.getElementById("note_editor")).focus();
-          }, 0);
-          this.data = data;
-          if( this.editor){
-            this.updateData();
-          }
-            
-        });
+
+    this.store_service.select( state => state).subscribe(state => {
+      if( this.node_selected && state.file.file &&
+        state.file.file.name != this.node_selected.name){
+        this.saveData();
+        this.data = {};
       }
+      this.node_selected = state.file.file;
+      let action = state.file.type;
+
+      let data = state.file.data;
+      if (this.node_selected && data ) {
+          // setTimeout(() => {
+          // (<HTMLInputElement>document.getElementById("note_editor")).focus();
+          // }, 0);
+          this.data = data;//Object.assign({},data);
+     }
+      this.exec_action(action);
     });
+
     this.subscription = this.source.subscribe(val => this.saveData());
   }
 
+  exec_action(action: string) {
+    switch (action) {
+      case FileActionTypes.SaveFile: {
+        this.saveData();
+        this.data = null;
+        break;
+      }
+      case FileActionTypes.DeleteFile: {
+        //statements; 
+        break;
+      }
+      case FileActionTypes.DirtyFile: {
+        this.saveData();
+
+        break;
+      }
+      case FileActionTypes.LoadFile: {
+        console.log("Load data")
+        if( this.editor){
+          this.updateData();
+        }
+        break;
+      }
+      default: {
+        //save statements; 
+        break;
+      }
+    }
+  }
+
   updateData(){
-    if( Object.keys(this.data).length > 0 ){
-      let saved_data = JSON.parse( JSON.parse( this.data ) );
-      console.log("saved_data ", saved_data)
-      this.editor.setContents( saved_data['ops'] );
+    if( this.data && Object.keys(this.data).length > 0 ){
+      let saved_data =  JSON.parse( this.data  );
+      //let saved_data =  this.data  ;
+      if( saved_data['ops'] ){
+        this.editor.setContents( saved_data['ops'] );
+      }
+    }else{
+      this.editor.setContents( {} );
     }
   }
 
   created($event: Quill) {
-    // tslint:disable-next-line:no-console
     console.log('editor-created: ', $event)
     console.log('data: ', this.data)
     this.editor = $event;
     if( this.data && this.editor){
       this.updateData();
     }
-
-    //const range = this.editor.getSelection(true)
-    //let delta = this.editor.setContents([
-    //  { insert: 'Hello ' },
-    //  { insert: 'World!', attributes: { bold: true } },
-    //  { insert: '\n' }
-    //]);
-    //console.log("delta after set content ", delta)
-    //delta = this.editor.insertEmbed(range.index, 'image', 'https://cloud.githubusercontent.com/assets/2264672/20601381/a51753d4-b258-11e6-92c2-1d79efa5bede.png', 'user')
-    //console.log("delta after insert ", delta)
   }
 
   changedEditor($event: EditorChangeContent | EditorChangeSelection) {
-    // tslint:disable-next-line:no-console
-    //console.log('editor-change', $event)
-    //console.log('editor ', this.editor.getContents());
     this.data = this.editor.getContents();
-    this.changed = true;
+    this.store_service.dispatch(new DirtyFile({file:this.node_selected, data: this.data}));
+    this.dirty = true;
   }
 
   saveData() {
-    if( this.changed ){
-      this.os_service.saveData(this.note_name, JSON.stringify( this.editor.getContents() ) );
+    if( this.dirty ){
+      this.os_service.saveData(this.node_selected.name, JSON.stringify( this.editor.getContents() ) );
+      this.dirty = false;
     }
+    
   }
 
   focus($event) {
-    // tslint:disable-next-line:no-console
-    //console.log('focus', $event)
     this.focused = true
     this.blurred = false
   }
 
   blur($event) {
-    // tslint:disable-next-line:no-console
-    //console.log('blur', $event)
     this.focused = false
     this.blurred = true
   }

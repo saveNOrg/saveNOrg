@@ -21,7 +21,6 @@ export class NotesNodeImp implements NotesNode{
         this.label = label;
         let name_parts = this.name.split('-'); 
         this.name = name_parts[0]+'-'+label+'-'+name_parts[2];
-        console.log("set label ", this.label +"."+this.name)
     }
 
   }

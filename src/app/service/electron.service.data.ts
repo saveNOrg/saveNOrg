@@ -10,7 +10,6 @@ import { NotesNodeImp } from '../utils/notes-node'
 export class ElectronService {
 
   private ipc: IpcRenderer
-  notes = new BehaviorSubject<string[]>([]);
   data = new BehaviorSubject<any>({});
 
   constructor() {
@@ -31,7 +30,11 @@ export class ElectronService {
   }
 
   getNote(note_name:string) {
-    this.ipc.send('openNotes', note_name);
+    this.ipc.send('openNote', note_name);
+  }
+
+  deleteNote(note_name:string) {
+    this.ipc.send('deleteNote', note_name);
   }
 
   saveData( note_name: string, note_data: any){

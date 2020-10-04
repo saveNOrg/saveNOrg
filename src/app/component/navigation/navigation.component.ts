@@ -1,8 +1,11 @@
 import { Component, OnInit, ViewEncapsulation, Input } from '@angular/core';
-import { NotesActionService } from "../../service/notes-action.service";
-import { SelectedNodeService } from '../../service/selected-node.service';
 import { NotesNodeImp } from '../../utils/notes-node';
 import { ElectronService } from '../../service/electron.service.data';
+import { AppState } from '../../reducers';
+import { SelectNote, RenameNote, DeleteNote, NoteActionTypes } from '../../actions/note.actions';
+import { DeleteFile } from '../../actions/file.actions';
+import { Store } from '@ngrx/store';
+
 
 @Component({
   selector: 'app-navigation',
@@ -19,63 +22,81 @@ export class NotesTreeComponent implements OnInit {
 
   @Input('data_saved') 
   set data_saved (d: NotesNodeImp[]){
-    console.log("data1 " , d)
     this.data = d;
   }
 
 
-  constructor(private action_service: NotesActionService,
-    private select_service: SelectedNodeService,
-    private os_service: ElectronService) {
+  constructor( private os_service: ElectronService,
+               private store_service: Store<AppState>) {
   }
 
   ngOnInit() {
-    this.action_service.currentMessage.subscribe(
-      message => {
-        this.message = message
-        console.log("action: ", this.message)
-        this.exec_action(this.message);
+    this.store_service.select(state => state).subscribe( state => {
+      if( state.note.note ){
+        this.node_selected = Object.assign({},state.note.note);
+      }else{
+        this.node_selected = state.note.note;
       }
-    );
-    this.select_service.currentNode.subscribe(node => this.node_selected = node)
+      this.message = state.note.type;
+      this.exec_action( this.message );
+    });
   }
 
-  getSelected(event) {
+  getSelected(devent) {
+    let event = Object.assign({}, devent);
     event.selected = !event.selected;
-    console.log("getSelected ", event)
-    this.select_service.changeSelectedNode(event);
-    this.os_service.getNote(event.name);
+    //Only fire when the new node selected is different
+    //than the previous node selected
+    if( this.node_selected || this.node_selected.name != event.name){
+      this.store_service.dispatch(new SelectNote({note: event}));
+    }
   }
 
 
 
   exec_action(action: string) {
+    let index = this.data.findIndex(node => node.name == this.node_selected.name && node.level == this.node_selected.level);
+          
     switch (action) {
-      case 'add': {
-        console.log("adding ", this.node_selected)
+      case NoteActionTypes.AddNote: {
 
         if (this.data.length == 0 && this.node_selected == null) {
           this.addNode(1);
         } else {
-          if (this.node_selected) {
-            let index = this.data.findIndex(node => node.name == this.node_selected.name && node.level == this.node_selected.level);
-            if (index >= 0) {
-              if (!this.data[index].children) {
-                this.data[index].children = []
-              }
-              this.addNode(this.node_selected.level + 1); 
-            }
+          //if (this.node_selected) {
+          //Add sibling  
+          if (index >= 0) {
+            this.addNode(this.node_selected.level); 
           }
+          //Add children
+          // if (!this.data[index].children) {
+              //   this.data[index].children = []
+              // }
+          //}
         }
 
         break;
       }
-      case 'delete': {
-        //statements; 
+      case NoteActionTypes.DeleteNote: {
+        if (index >= 0) {
+          this.data.splice(index, 1);
+          this.store_service.dispatch(new DeleteFile({file: this.node_selected, data: null}));
+        }
         break;
       }
-      case 'edit': {
-        //statements; 
+      case NoteActionTypes.RenameNote: {
+        if (this.node_selected) {
+          if (index >= 0) {
+            this.new_node_name = this.data[index].label;
+            this.data[index].label = '';
+            this.data[index].selected=false;
+            this.getSelected(this.node_selected)
+          }
+        }
+        break;
+      }
+      case NoteActionTypes.SelectNote: {
+        console.log("node selected ")
         break;
       }
       default: {
@@ -95,7 +116,6 @@ export class NotesTreeComponent implements OnInit {
   }
 
   renameNode() {
-    console.log("event ", this.data)
     let selected = this.data.find(ren_node => ren_node.label == '');
     if( this.new_node_name == ''){
       selected.setLabel('Note_'+this.getFormattedDate());
@@ -103,7 +123,7 @@ export class NotesTreeComponent implements OnInit {
       selected.setLabel(this.new_node_name);
       this.new_node_name = '';
     }
-    this.action_service.changeMessage('updated');
+    this.store_service.dispatch( new RenameNote({note: this.node_selected}));
     selected.selected = false;
     this.getSelected(selected);
   }
