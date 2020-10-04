@@ -61,7 +61,6 @@ fdescribe('NotesTreeDataSource', () => {
     expect( nodes.length).toBe(5);
     expect( nodes.findIndex(n => n.name == 'test') >=0 ).toBe(true);
 
-    //console.log("Adding level 3: ", JSON.stringify(data_source._data));
     data_source.addNode( 
         {name:'Vegetables', level:1},
         {name:'test',level:2},
@@ -75,7 +74,6 @@ fdescribe('NotesTreeDataSource', () => {
 
   it('should remove node at parent_node', () => {
     let nodes = data_source.getNodes4Level(3,data_source._data);
-    console.log("nodes at level 3", nodes) 
     
     data_source.removeNode( 
         {name:'Green', level:2},
@@ -83,7 +81,6 @@ fdescribe('NotesTreeDataSource', () => {
         data_source._data ) ;
 
     nodes = data_source.getNodes4Level(3,data_source._data);
-    console.log("nodes at level 3", nodes) 
     expect( nodes.length).toBe(3);
     expect( nodes.findIndex(n => n.name == 'Brussels sprouts') < 0 ).toBe(true);
 
@@ -91,7 +88,6 @@ fdescribe('NotesTreeDataSource', () => {
 
     xit('should replace node at parent_node', () => {
         let nodes = data_source.getNodes4Level(3,data_source._data);
-        console.log("nodes at level 3", nodes) 
         
         data_source.replaceNode( 
             {name:'Green', level:2},
@@ -101,7 +97,6 @@ fdescribe('NotesTreeDataSource', () => {
             'replace' ) ;
     
         nodes = data_source.getNodes4Level(3,data_source._data);
-        console.log("nodes at level 3", nodes) 
         expect( nodes.length).toBe(4);
         expect( nodes.findIndex(n => n.name == 'Brussels sprouts') < 0 ).toBe(true);
         expect( nodes.findIndex(n => n.name == 'pepper') >= 0 ).toBe(true);

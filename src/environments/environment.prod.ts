@@ -1,3 +1,4 @@
 export const environment = {
-  production: true
+  production: true,
+  save_time: 30000
 };
