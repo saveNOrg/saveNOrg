@@ -1,12 +1,6 @@
-import {
-  ActionReducer,
-  ActionReducerMap,
-  createFeatureSelector,
-  createSelector,
-  MetaReducer
-} from '@ngrx/store';
+import { ActionReducerMap, MetaReducer } from '@ngrx/store';
 import { environment } from '../../environments/environment';
-import { NotesNodeImp } from '../utils/notes-node';
+import { NotesNodeImp } from '../utils/NotesNodeImp';
 import { NoteActionTypes, NoteAction } from '../actions/note.actions';
 import { FileActionTypes, FileAction } from '../actions/file.actions';
 
@@ -45,7 +39,11 @@ export function NotesReducer(state: NoteState = initialNoteState, action: NoteAc
         note: action.payload.note,
         type: action.type
       };
-
+    case NoteActionTypes.ClearNameNote:
+      return {
+        note: action.payload.note,
+        type: action.type
+      };
     case NoteActionTypes.RenameNote:
       return {
         note: action.payload.note,
@@ -61,7 +59,6 @@ export function NotesReducer(state: NoteState = initialNoteState, action: NoteAc
         note: action.payload.note,
         type: action.type
       };
-
     default:
       return state;
   }
@@ -75,7 +72,6 @@ export function FilesReducer(state: FileState = initialFileState, action: FileAc
         data: action.payload.data,
         type: action.type
       };
-
     case FileActionTypes.DirtyFile:
       return {
         file: action.payload.file,
@@ -94,7 +90,6 @@ export function FilesReducer(state: FileState = initialFileState, action: FileAc
         data: action.payload.data,
         type: action.type
       };
-
     default:
       return state;
   }
@@ -106,8 +101,8 @@ export const reducers: ActionReducerMap<AppState> = {
 };
 
 
-export const selectNote = (state: AppState) => state.note.note;
+export const noteSelector = (state: AppState) => state.note;
 
-export const selectFile = (state: AppState) => state.file.file;
+export const fileSelector = (state: AppState) => state.file;
 
 export const metaReducers: MetaReducer<any>[] = !environment.production ? [] : [];

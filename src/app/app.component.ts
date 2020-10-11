@@ -1,35 +1,40 @@
-import { Component, OnInit, NgZone } from '@angular/core';
-import { NotesNodeImp } from './utils/notes-node';
+import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
+import { NotesNodeImp } from './utils/NotesNodeImp';
 import { ResizeEvent } from 'angular-resizable-element';
 import { ElectronServiceFile } from './service/electron.service.files';
 import { Store } from '@ngrx/store';
 import { AppState } from './reducers';
+import { Subject } from 'rxjs'
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit{
+export class AppComponent implements OnInit, OnDestroy{
   title = 'myLifeNotes';
   public style: object = {};
   isSelected:boolean=false;
   NOTES_DATA: NotesNodeImp[]=[];
+
+  private destroy$: Subject<void> = new Subject<void>();
   
   ngOnInit(){
-    this.electron_service.notes.subscribe( notes =>{
-      let tmp = [];
+    this.electron_service.notes.pipe(takeUntil(this.destroy$))
+    .subscribe( notes =>{
+      
       notes.forEach( note => {
         let name_parts = note.split('-'); 
         let notesObj =new NotesNodeImp(Number.parseInt(name_parts[0]));
         notesObj.name = note;
         notesObj.label = name_parts[1];
-        tmp.push(notesObj);
+        this.NOTES_DATA.push(notesObj);
       });
-      this.NOTES_DATA = Object.assign([], tmp);
-      this.zone.run(() => this.NOTES_DATA = Object.assign([], tmp));
+      this.zone.run(() => this.NOTES_DATA );
     })
-    this.store_service.select(state => state).subscribe( state => {
+    this.store_service.select(state => state).pipe(takeUntil(this.destroy$))
+    .subscribe( state => {
       this.isSelected =  state.note.note != null;
     });
   }
@@ -52,4 +57,11 @@ export class AppComponent implements OnInit{
       height: `${event.rectangle.height}px`
     };
   } 
+
+
+  ngOnDestroy(){
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
 }

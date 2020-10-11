@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { IpcRenderer } from 'electron';
-import { NotesNodeImp } from '../utils/notes-node'
 
 
 @Injectable({

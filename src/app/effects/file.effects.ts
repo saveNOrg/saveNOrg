@@ -21,7 +21,7 @@ export class FileEffects {
         
         return this.data_service.data.pipe(
           mergeMap((d) => {
-            let data = {};
+            let data = {"ops":[]};
             if( typeof d === 'string' ) data = JSON.parse( d ) ;
             let payload = {file: action.payload.note, data: data };
             
@@ -31,19 +31,6 @@ export class FileEffects {
         }
       )
   );
-
-  @Effect()
-  deleteNote$ = this.actions$
-    .pipe(  
-      ofType<DeleteFile>(FileActionTypes.DeleteFile),
-      mergeMap((action) => {
-        this.data_service.deleteNote(action.payload.file.name);
-        
-        return of() 
-      }
-      )
-  );
-
 
 
   constructor(private actions$: Actions, private data_service: ElectronService ) {}

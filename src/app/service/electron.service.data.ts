@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { IpcRenderer } from 'electron';
-import { NotesNodeImp } from '../utils/notes-node'
 
 
 @Injectable({
@@ -35,6 +34,10 @@ export class ElectronService {
 
   deleteNote(note_name:string) {
     this.ipc.send('deleteNote', note_name);
+  }
+
+  renameNote(existing_note_name:string,note_name:string) {
+    this.ipc.send('renameNote', [existing_note_name, note_name]);
   }
 
   saveData( note_name: string, note_data: any){
