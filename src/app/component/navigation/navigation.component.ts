@@ -110,6 +110,7 @@ export class NotesTreeComponent implements OnInit {
   selectNode(devent: NotesNodeImp) {
     let event = Object.assign({}, devent);
     event.selected = !event.selected;
+    console.log("Note selected ", devent)
     //Only fire when the new node selected is different
     //than the previous node selected
     if( this.node_selected && this.node_selected.label != event.label){
@@ -119,6 +120,8 @@ export class NotesTreeComponent implements OnInit {
       console.log("Dispatch SelectNote")
       this.store_service.dispatch(new SelectNote({note: event}));
     }
+    console.log("Dispatch SelectNote")
+    this.store_service.dispatch(new SelectNote({note: event}));
   }
 
   addNode(level:number) {

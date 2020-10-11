@@ -23,16 +23,15 @@ export class AppComponent implements OnInit, OnDestroy{
   ngOnInit(){
     this.electron_service.notes.pipe(takeUntil(this.destroy$))
     .subscribe( notes =>{
-      let tmp = [];
+      
       notes.forEach( note => {
         let name_parts = note.split('-'); 
         let notesObj =new NotesNodeImp(Number.parseInt(name_parts[0]));
         notesObj.name = note;
         notesObj.label = name_parts[1];
-        tmp.push(notesObj);
+        this.NOTES_DATA.push(notesObj);
       });
-      this.NOTES_DATA = Object.assign([], tmp);
-      this.zone.run(() => this.NOTES_DATA = Object.assign([], tmp));
+      this.zone.run(() => this.NOTES_DATA );
     })
     this.store_service.select(state => state).pipe(takeUntil(this.destroy$))
     .subscribe( state => {
