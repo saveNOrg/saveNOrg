@@ -45,7 +45,6 @@ export function NotesReducer(state: NoteState = initialNoteState, action: NoteAc
         note: action.payload.note,
         type: action.type
       };
-
     case NoteActionTypes.RenameNote:
       return {
         note: action.payload.note,
@@ -61,7 +60,6 @@ export function NotesReducer(state: NoteState = initialNoteState, action: NoteAc
         note: action.payload.note,
         type: action.type
       };
-
     default:
       return state;
   }
@@ -75,7 +73,6 @@ export function FilesReducer(state: FileState = initialFileState, action: FileAc
         data: action.payload.data,
         type: action.type
       };
-
     case FileActionTypes.DirtyFile:
       return {
         file: action.payload.file,
@@ -94,7 +91,6 @@ export function FilesReducer(state: FileState = initialFileState, action: FileAc
         data: action.payload.data,
         type: action.type
       };
-
     default:
       return state;
   }
@@ -106,8 +102,8 @@ export const reducers: ActionReducerMap<AppState> = {
 };
 
 
-export const selectNote = (state: AppState) => state.note.note;
+export const noteSelector = (state: AppState) => state.note;
 
-export const selectFile = (state: AppState) => state.file.file;
+export const fileSelector = (state: AppState) => state.file;
 
 export const metaReducers: MetaReducer<any>[] = !environment.production ? [] : [];

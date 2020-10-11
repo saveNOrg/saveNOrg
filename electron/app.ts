@@ -18,23 +18,16 @@ function getNotes() {
 function deleteNote(note_name: string) {
   let file_name = path.join(DATA_DIR, note_name);
   if (fs.existsSync(file_name)) {
-    fs.unlink(file_name, (err) => {
-      if (err) {
-        console.error(err)
-        return
-      }
-    })
+    fs.unlinkSync(file_name);
   }
 }
 
   function getData(note_name: string) {
-
     let file_name = path.join(DATA_DIR, note_name);
     if (fs.existsSync(file_name)) {
       try {
         const data = fs.readFileSync(file_name, 'utf-8');
         win.webContents.send("getNoteDataResponse", data);
-        console.log(data)
       } catch (err) {
         console.error(err)
       }
@@ -97,8 +90,6 @@ function deleteNote(note_name: string) {
   });
 
   ipcMain.on("saveData", (event, note_name, note_data) => {
-    console.log("note_name ", note_name);
-    console.log("note_data ", note_data);
     if (!fs.existsSync(DATA_DIR)) {
       fs.mkdirSync(DATA_DIR);
     }
@@ -107,7 +98,6 @@ function deleteNote(note_name: string) {
 
     fs.writeFile(file_name, JSON.stringify(note_data), 'utf-8', function (err) {
       if (err) return console.log(err);
-      console.log(note_data + ' > ' + file_name);
     });
   });
 
