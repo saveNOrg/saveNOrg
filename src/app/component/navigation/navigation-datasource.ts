@@ -1,6 +1,4 @@
-import { CheckboxControlValueAccessor } from '@angular/forms';
 import { NotesNode } from '../../utils/model';
-import { NotesNodeImp } from '../../utils/notes-node';
 
 export class NotesTreeDataSource {
   

@@ -1,5 +1,5 @@
 import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
-import { NotesNodeImp } from './utils/notes-node';
+import { NotesNodeImp } from './utils/NotesNodeImp';
 import { ResizeEvent } from 'angular-resizable-element';
 import { ElectronServiceFile } from './service/electron.service.files';
 import { Store } from '@ngrx/store';

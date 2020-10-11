@@ -1,12 +1,6 @@
-import {
-  ActionReducer,
-  ActionReducerMap,
-  createFeatureSelector,
-  createSelector,
-  MetaReducer
-} from '@ngrx/store';
+import { ActionReducerMap, MetaReducer } from '@ngrx/store';
 import { environment } from '../../environments/environment';
-import { NotesNodeImp } from '../utils/notes-node';
+import { NotesNodeImp } from '../utils/NotesNodeImp';
 import { NoteActionTypes, NoteAction } from '../actions/note.actions';
 import { FileActionTypes, FileAction } from '../actions/file.actions';
 
@@ -41,6 +35,11 @@ export interface AppState {
 export function NotesReducer(state: NoteState = initialNoteState, action: NoteAction): NoteState {
   switch (action.type) {
     case NoteActionTypes.SelectNote:
+      return {
+        note: action.payload.note,
+        type: action.type
+      };
+    case NoteActionTypes.ClearNameNote:
       return {
         note: action.payload.note,
         type: action.type

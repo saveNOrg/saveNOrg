@@ -8,10 +8,9 @@ import { Store } from '@ngrx/store';
 import { AppState, noteSelector, fileSelector } from '../../reducers';
 import { FileActionTypes, DirtyFile } from '../../actions/file.actions';
 import { NoteActionTypes } from '../../actions/note.actions';
-import { NotesNodeImp } from '../../utils/notes-node';
+import { NotesNodeImp } from '../../utils/NotesNodeImp';
 import { Subject } from 'rxjs'
 import { takeUntil } from 'rxjs/operators';
-import { timeStamp } from 'console';
 
 @Component({
   selector: 'app-data',
@@ -57,9 +56,13 @@ export class NotesDataComponent implements OnInit, OnDestroy {
     this.store_service.select( noteSelector ).pipe(takeUntil(this.destroy$))
     .subscribe(state => {
       console.log("Data action ", state.type)
-      if( state.type === NoteActionTypes.RenameNote)
+      if( state.type === NoteActionTypes.RenameNote){
+        if( this.node_selected.label ){
+          this.os_service.renameNote(this.node_selected.name, state.note.name);
+        }
         this.node_selected = state.note;
         console.log("Rename note ", this.node_selected)
+      }
     });
 
     this.subscription = this.source.pipe(takeUntil(this.destroy$))

@@ -1,9 +1,10 @@
 import { Action } from '@ngrx/store';
-import { NotesNodeImp } from '../utils/notes-node';
+import { NotesNodeImp } from '../utils/NotesNodeImp';
 
 export enum NoteActionTypes {
   AddNote = '[Note] Add Note',
   DeleteNote = '[Note] Delete Note',
+  ClearNameNote = '[Note] ClearName  Note',
   RenameNote = '[Note] Rename Note',
   SelectNote = '[Note] Select Note'
 }
@@ -31,6 +32,14 @@ export class DeleteNote implements Action {
   }
 }
 
+export class ClearNameNote implements Action {
+  readonly type = NoteActionTypes.ClearNameNote;
+
+  constructor(readonly payload: {note: NotesNodeImp}) {
+
+  }
+}
+
 export class RenameNote implements Action {
   readonly type = NoteActionTypes.RenameNote;
 
@@ -47,4 +56,4 @@ export class SelectNote implements Action {
   }
 }
 
-export type ActionsUnion = AddNote | RenameNote | DeleteNote | SelectNote;
+export type ActionsUnion = AddNote | ClearNameNote | RenameNote | DeleteNote | SelectNote;

@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { NotesNodeImp } from '../utils/notes-node';
+import { NotesNodeImp } from '../utils/NotesNodeImp';
 
 export enum FileActionTypes {
   LoadFile = '[File] Load File',
