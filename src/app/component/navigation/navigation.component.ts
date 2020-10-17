@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewEncapsulation, Input } from '@angular/core';
 import { NotesNodeImp } from '../../utils/NotesNodeImp';
-import { ElectronService } from '../../service/electron.service.data';
+import { ElectronServiceData } from '../../service/electron.service.data';
 import { AppState, noteSelector, fileSelector } from '../../reducers';
 import { SelectNote, RenameNote, DeleteNote, NoteActionTypes } from '../../actions/note.actions';
 import { DeleteFile, SaveFile } from '../../actions/file.actions';
@@ -30,14 +30,13 @@ export class NotesTreeComponent implements OnInit {
     this.data = d;
   }
 
-  constructor( private os_service: ElectronService,
+  constructor( private os_service: ElectronServiceData,
                private store_service: Store<AppState>) {
   }
 
   ngOnInit() {
     this.store_service.select(noteSelector).pipe(takeUntil(this.destroy$))
     .subscribe( state => {
-      console.log("Nav action ", state.type)
         if( state.note ){
           this.node_selected = new NotesNodeImp(state.note.level, state.note.selected)
           this.node_selected.name = state.note.name;
@@ -51,7 +50,6 @@ export class NotesTreeComponent implements OnInit {
     });
     this.store_service.select(fileSelector).pipe(takeUntil(this.destroy$))
     .subscribe( state => {
-      console.log("Nav action ", state.type)
       if( state.file ){
         this.note_content = state.data;
       }
@@ -81,7 +79,6 @@ export class NotesTreeComponent implements OnInit {
       case NoteActionTypes.DeleteNote: {
         if (index >= 0) {
           this.data.splice(index, 1);
-          console.log("Dispatch deleteNote")
           this.store_service.dispatch(new DeleteFile({file: this.node_selected, data: {"ops":[]} } ));
           this.node_selected = null;
         }
@@ -97,11 +94,11 @@ export class NotesTreeComponent implements OnInit {
         break;
       };
       case NoteActionTypes.SelectNote: {
-        console.log("node selected ")
+        
         break;
       };
       default: {
-        //save statements; 
+        console.log("nav default") 
         break;
       };
     }
@@ -110,29 +107,22 @@ export class NotesTreeComponent implements OnInit {
   selectNode(devent: NotesNodeImp) {
     let event = Object.assign({}, devent);
     event.selected = !event.selected;
-    console.log("Note selected ", devent)
     //Only fire when the new node selected is different
     //than the previous node selected
     if( this.node_selected && this.node_selected.label != event.label){
-      console.log(" nav selected nodes", this.node_selected );
-      console.log("Dispatch SaveFile")
       this.store_service.dispatch( new SaveFile({file: this.node_selected, data: this.note_content}))
-      console.log("Dispatch SelectNote")
       this.store_service.dispatch(new SelectNote({note: event}));
     }
-    console.log("Dispatch SelectNote")
     this.store_service.dispatch(new SelectNote({note: event}));
   }
 
   addNode(level:number) {
     if( this.node_selected && this.node_selected.label != "" ){
-      console.log("Dispatch SaveFile")
       this.store_service.dispatch( new SaveFile({file: this.node_selected, data: this.note_content}))
     }
 
     this.data.push(new NotesNodeImp(level, true));
     this.node_selected = new NotesNodeImp(level, true);
-    console.log("Dispatch SelectNote")
     this.store_service.dispatch(new SelectNote({note: this.node_selected}));
     setTimeout(() => { // this will make the execution after the above boolean has changed
       (<HTMLInputElement>document.getElementById("note_name_input")).focus();
@@ -150,13 +140,11 @@ export class NotesTreeComponent implements OnInit {
 
     this.data[selected].selected = true;
   
-    console.log("Dispatch RenameNote")
     this.store_service.dispatch( new RenameNote({note: this.data[selected]}));
   }
 
   renameNode(){
     let index_selected = this.data.findIndex(ren_node => ren_node.label == this.node_selected.label);
-    console.log("node_selected type ", typeof this.node_selected);
     this.node_selected.setLabel('');
     this.data[index_selected] = this.node_selected;
     

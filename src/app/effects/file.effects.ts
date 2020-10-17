@@ -1,12 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { NoteActionTypes, SelectNote } from '../actions/note.actions';
-import { FileActionTypes, LoadFile, DeleteFile } from '../actions/file.actions';
+import { LoadFile } from '../actions/file.actions';
 
-import { ElectronService } from '../service/electron.service.data';
-import { map, mergeMap, catchError } from 'rxjs/operators';
-import { AppState } from '../reducers';
-import { Store } from '@ngrx/store';
+import { ElectronServiceData } from '../service/electron.service.data';
+import { mergeMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 
 @Injectable()
@@ -33,6 +31,6 @@ export class FileEffects {
   );
 
 
-  constructor(private actions$: Actions, private data_service: ElectronService ) {}
+  constructor(private actions$: Actions, private data_service: ElectronServiceData ) {}
 
 }

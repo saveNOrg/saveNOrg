@@ -49,7 +49,14 @@
 .toolbar-button{
     padding-left: 16px;
 }
+.search-results{
+    margin-left: 12px;
+    margin-right: 12px;
+}
 
-.toolbar-search{
-    padding-right: 24px;
+.toolbar-search-btn{
+    border: 0px;
+    outline: 0px;
+    background: #ccc;
+    padding: 0px;
 }

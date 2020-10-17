@@ -46,6 +46,21 @@ function getData(note_name: string) {
 
 }
 
+function search(pattern:string){
+  let files = fs.readdirSync(DATA_DIR, { withFileTypes: true },);
+  let data:string[] = [];
+  files.forEach( file =>{
+    if( file.isFile ){
+      let note_data = fs.readFileSync(path.join(DATA_DIR, file.name), 'utf-8');
+      let matched = note_data.indexOf(pattern);
+      if( matched >= 0 ){
+        data.push(file.name)
+      }
+    }
+  });
+  win.webContents.send("searchResponse", data);
+}
+
 function createWindow() {
 
   win = new BrowserWindow(
@@ -119,6 +134,9 @@ ipcMain.on("deleteNote", (event, note_name) => {
 });
 
 ipcMain.on("renameNote", (event, note_names) => {
-  console.log("Existing " + note_names[0] +" new "+note_names[1])
   renameNote(note_names[0], note_names[1]);
+});
+
+ipcMain.on("searchNotes", (event, pattern) => {
+  search(pattern);
 });
