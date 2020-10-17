@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { EditorChangeContent, EditorChangeSelection } from 'ngx-quill'
 import Quill from 'quill'
-import { ElectronService } from '../../service/electron.service.data';
+import { ElectronServiceData } from '../../service/electron.service.data';
 import { interval, Subscription, VirtualTimeScheduler } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Store } from '@ngrx/store';
@@ -30,7 +30,7 @@ export class NotesDataComponent implements OnInit, OnDestroy {
 
   private destroy$: Subject<void> = new Subject<void>();
 
-  constructor(private os_service: ElectronService,
+  constructor(private os_service: ElectronServiceData,
               private store_service: Store<AppState>) {
   }
 
@@ -38,7 +38,6 @@ export class NotesDataComponent implements OnInit, OnDestroy {
 
     this.store_service.select( fileSelector ).pipe(takeUntil(this.destroy$))
     .subscribe(state => {
-      console.log("Data action ", state.type)
 
       if( state.file ){
 
@@ -55,13 +54,11 @@ export class NotesDataComponent implements OnInit, OnDestroy {
 
     this.store_service.select( noteSelector ).pipe(takeUntil(this.destroy$))
     .subscribe(state => {
-      console.log("Data action ", state.type)
       if( state.type === NoteActionTypes.RenameNote){
         if( this.node_selected.label ){
           this.os_service.renameNote(this.node_selected.name, state.note.name);
         }
         this.node_selected = state.note;
-        console.log("Rename note ", this.node_selected)
       }
     });
 
@@ -89,7 +86,6 @@ export class NotesDataComponent implements OnInit, OnDestroy {
       //   break;
       // }
       case FileActionTypes.LoadFile: {
-        console.log("Load data")
         if( this.editor ){
           this.updateData();
         }
@@ -103,9 +99,6 @@ export class NotesDataComponent implements OnInit, OnDestroy {
   }
 
   updateData(){
-    console.log( "Type: ", typeof this.data)
-    console.log( "This.data: ",  this.data)
-    
     if( this.data && Object.keys(this.data).length > 0 ){
 
       let saved_data = {};
@@ -124,7 +117,6 @@ export class NotesDataComponent implements OnInit, OnDestroy {
   }
 
   created($event: Quill) {
-    console.log('editor-created: ', $event)
     this.editor = $event;
     if( this.editor ){
       this.updateData();
@@ -155,7 +147,6 @@ export class NotesDataComponent implements OnInit, OnDestroy {
   }
 
   setFocus(){
-    console.log("div clicked");
     (<HTMLInputElement>document.getElementById("note_editor")).focus();
     this.focus(null);
   }
