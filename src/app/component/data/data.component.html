@@ -1,6 +1,6 @@
-<div class="data-container" fxLayout="column" fxLayoutAlign="start stretch" (click)="setFocus()" >
+<div class="data-container" fxLayout="column" fxLayoutAlign="start stretch" id="data_container" >
 
-    <quill-editor [styles]="{ 'min-height': '200px'}" 
+    <quill-editor 
         (onFocus)="focus($event)" #note_editor id="note_editor"
         (onEditorChanged)="changedEditor($event)" (onBlur)="blur($event)" 
         (onEditorCreated)="created($event)">
