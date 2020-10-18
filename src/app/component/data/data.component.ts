@@ -22,7 +22,7 @@ export class NotesDataComponent implements OnInit, OnDestroy {
   editor: Quill;
   blurred = false
   focused = false
-  dirty:boolean = false;
+  dirty: boolean = false;
   node_selected: NotesNodeImp = null;
   data: any = null;
   subscription: Subscription;
@@ -31,39 +31,39 @@ export class NotesDataComponent implements OnInit, OnDestroy {
   private destroy$: Subject<void> = new Subject<void>();
 
   constructor(private os_service: ElectronServiceData,
-              private store_service: Store<AppState>) {
+    private store_service: Store<AppState>) {
   }
 
   ngOnInit(): void {
 
-    this.store_service.select( fileSelector ).pipe(takeUntil(this.destroy$))
-    .subscribe(state => {
+    this.store_service.select(fileSelector).pipe(takeUntil(this.destroy$))
+      .subscribe(state => {
 
-      if( state.file ){
+        if (state.file) {
 
-        this.node_selected = state.file;
-        let action = state.type;
-        let data = state.data;
+          this.node_selected = state.file;
+          let action = state.type;
+          let data = state.data;
 
-        if (this.node_selected && data ) {
+          if (this.node_selected && data) {
             this.data = data;
-       }
-        this.exec_action(action);
-      }
-    });
-
-    this.store_service.select( noteSelector ).pipe(takeUntil(this.destroy$))
-    .subscribe(state => {
-      if( state.type === NoteActionTypes.RenameNote){
-        if( this.node_selected.label ){
-          this.os_service.renameNote(this.node_selected.name, state.note.name);
+          }
+          this.exec_action(action);
         }
-        this.node_selected = state.note;
-      }
-    });
+      });
+
+    this.store_service.select(noteSelector).pipe(takeUntil(this.destroy$))
+      .subscribe(state => {
+        if (state.type === NoteActionTypes.RenameNote) {
+          if (this.node_selected.label) {
+            this.os_service.renameNote(this.node_selected.name, state.note.name);
+          }
+          this.node_selected = state.note;
+        }
+      });
 
     this.subscription = this.source.pipe(takeUntil(this.destroy$))
-    .subscribe(val => this.saveData());
+      .subscribe(val => this.saveData());
   }
 
   exec_action(action: string) {
@@ -74,7 +74,7 @@ export class NotesDataComponent implements OnInit, OnDestroy {
       }
       case FileActionTypes.DeleteFile: {
         this.updateData();
-        this.os_service.deleteNote( this.node_selected.name );
+        this.os_service.deleteNote(this.node_selected.name);
         this.node_selected = null;
         this.dirty = false;
 
@@ -86,7 +86,7 @@ export class NotesDataComponent implements OnInit, OnDestroy {
       //   break;
       // }
       case FileActionTypes.LoadFile: {
-        if( this.editor ){
+        if (this.editor) {
           this.updateData();
         }
         break;
@@ -98,27 +98,29 @@ export class NotesDataComponent implements OnInit, OnDestroy {
     }
   }
 
-  updateData(){
-    if( this.data && Object.keys(this.data).length > 0 ){
+  updateData() {
+    if (this.data && Object.keys(this.data).length > 0) {
 
       let saved_data = {};
-      if( typeof this.data === "object") saved_data = this.data;
-      else  saved_data =  JSON.parse( this.data  );
+      if (typeof this.data === "object") saved_data = this.data;
+      else saved_data = JSON.parse(this.data);
 
-      if( saved_data['ops'] ){
-        this.editor.setContents( saved_data['ops'] );
+      if (saved_data['ops']) {
+        this.editor.setContents(saved_data['ops']);
         this.data = null;
       }
 
-    }else{
-      this.editor.setContents( {} );
+    } else {
+      this.editor.setContents({});
     }
 
   }
 
   created($event: Quill) {
+    console.log("created ", $event)
+
     this.editor = $event;
-    if( this.editor ){
+    if (this.editor) {
       this.updateData();
     }
   }
@@ -129,29 +131,34 @@ export class NotesDataComponent implements OnInit, OnDestroy {
   }
 
   saveData() {
-    if( this.dirty && this.node_selected && this.node_selected.label != '' ){
-      this.os_service.saveData(this.node_selected.name, JSON.stringify( this.editor.getContents() ) );
+    if (this.dirty && this.node_selected && this.node_selected.label != '') {
+      this.os_service.saveData(this.node_selected.name, JSON.stringify(this.editor.getContents()));
     }
     this.data = null;
-    this.dirty = false;  
+    this.dirty = false;
   }
 
   focus($event) {
+    console.log("focus ", $event)
     this.focused = true
     this.blurred = false
   }
 
   blur($event) {
+    console.log("blur ", $event)
+
     this.focused = false
     this.blurred = true
   }
 
-  setFocus(){
-    (<HTMLInputElement>document.getElementById("note_editor")).focus();
-    this.focus(null);
+  setFocus() {
+    console.log("setFocus ");
+    setTimeout(() => {
+      (<HTMLInputElement>document.getElementById("note_editor")).focus();
+    }, 0);
   }
 
-  ngOnDestroy(){
+  ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
   }

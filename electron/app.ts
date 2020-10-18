@@ -76,6 +76,8 @@ function createWindow() {
     }
   );
 
+  win.removeMenu();
+
   win.loadURL(
     url.format({
       "pathname": path.join(__dirname, `./index.html`),
@@ -84,7 +86,7 @@ function createWindow() {
     })
   );
 
-  win.webContents.openDevTools();
+  //win.webContents.openDevTools();
 
   win.on("closed", () => {
     win = null;
