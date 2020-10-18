@@ -75,7 +75,7 @@ function createWindow() {
       }
     }
   );
-
+  //Removes the Menu bar
   win.removeMenu();
 
   win.loadURL(
@@ -85,7 +85,7 @@ function createWindow() {
       "slashes": true
     })
   );
-
+  //Displays development tools
   //win.webContents.openDevTools();
 
   win.on("closed", () => {
