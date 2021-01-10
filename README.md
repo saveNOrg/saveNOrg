@@ -61,7 +61,7 @@ Another possibility is `npm start`, this will only build the `Electron` portion 
 
 There is nothing so far in terms of test, since most of this was done as an exploratory application. However, this is one of the things that I want to change by adding automated tests. 
 
-# Featues
+# Features
 
 Right now the application is very simple. It is able to create, delete, rename notes as well as search through existing notes. 
 The next features:
