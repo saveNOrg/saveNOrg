@@ -2,6 +2,6 @@ import * as fromFile from './file.actions';
 
 describe('loadFiles', () => {
   it('should return an action', () => {
-    expect(fromFile.loadFiles().type).toBe('[File] Load Files');
+    expect( (new fromFile.LoadFile({file:null, data: {}} )).type ).toBe('[File] Load Files');
   });
 });
