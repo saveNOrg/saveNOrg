@@ -12,7 +12,7 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "electron": "ng build --base-href ./ && tsc --p electron && electron ./dist/electron/app.js",
+    "electron": "ng build --base-href ./ && tsc --p src/electron && electron ./dist/electron/app.js",
     "e2e": "ng e2e",
     "package": "electron-forge package",
     "make": "electron-forge make"
