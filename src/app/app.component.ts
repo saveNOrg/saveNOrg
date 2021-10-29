@@ -6,6 +6,7 @@ import { Store } from '@ngrx/store';
 import { AppState } from './reducers';
 import { Subject } from 'rxjs'
 import { takeUntil } from 'rxjs/operators';
+import {FormControl} from '@angular/forms';
 
 @Component({
   selector: 'app-root',
@@ -17,6 +18,9 @@ export class AppComponent implements OnInit, OnDestroy{
   public style: object = {};
   isSelected:boolean=false;
   NOTES_DATA: NotesNodeImp[]=[];
+
+  tabs = ['First', 'Second', 'Third'];
+  selected = new FormControl(0);
 
   private destroy$: Subject<void> = new Subject<void>();
   
@@ -62,6 +66,18 @@ export class AppComponent implements OnInit, OnDestroy{
   ngOnDestroy(){
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  addTab(selectAfterAdding: boolean) {
+    this.tabs.push('New');
+
+    if (selectAfterAdding) {
+      this.selected.setValue(this.tabs.length - 1);
+    }
+  }
+
+  removeTab(index: number) {
+    this.tabs.splice(index, 1);
   }
 
 }

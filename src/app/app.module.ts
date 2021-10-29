@@ -6,6 +6,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
 import {MatTreeModule} from '@angular/material/tree';
+import {MatTabsModule} from '@angular/material/tabs';
 import { QuillModule } from 'ngx-quill'
 import { FormsModule } from '@angular/forms';
 import { ResizableModule } from 'angular-resizable-element';
@@ -60,6 +61,7 @@ const  toolbar= [
     MatIconModule,
     MatInputModule,
     MatTreeModule,
+    MatTabsModule,
     QuillModule.forRoot({
       modules: {
         toolbar: toolbar

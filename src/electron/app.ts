@@ -2,11 +2,12 @@ import { app, BrowserWindow, ipcMain } from "electron";
 import * as path from "path";
 import * as url from "url";
 import * as fs from "fs";
+import * as os from './library/filesystem.component';
 
 let win: BrowserWindow;
 
 const DATA_DIR = path.join(__dirname, 'data');
-
+/*
 function getNotes() {
   if (fs.existsSync(DATA_DIR)) {
     let files = fs.readdirSync(DATA_DIR, { withFileTypes: true },);
@@ -60,6 +61,7 @@ function search(pattern:string){
   });
   win.webContents.send("searchResponse", data);
 }
+*/
 
 function createWindow() {
 
@@ -86,7 +88,7 @@ function createWindow() {
     })
   );
   //Displays development tools
-  //win.webContents.openDevTools();
+  win.webContents.openDevTools();
 
   win.on("closed", () => {
     win = null;
@@ -112,33 +114,39 @@ app.on('window-all-closed', () => {
 });
 
 ipcMain.on("loadNotes", (event) => {
-  getNotes();
+  os.getNotes(DATA_DIR);
+  //getNotes();
 });
 
 ipcMain.on("saveData", (event, note_name, note_data) => {
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR);
-  }
+  // if (!fs.existsSync(DATA_DIR)) {
+  //   fs.mkdirSync(DATA_DIR);
+  // }
 
-  let file_name = path.join(DATA_DIR, note_name);
+  // let file_name = path.join(DATA_DIR, note_name);
 
-  fs.writeFile(file_name, JSON.stringify(note_data), 'utf-8', function (err) {
-    if (err) return console.log(err);
-  });
+  // fs.writeFile(file_name, JSON.stringify(note_data), 'utf-8', function (err) {
+  //   if (err) return console.log(err);
+  // });
+  os.createNote(note_name, note_data, DATA_DIR);
 });
 
 ipcMain.on("openNote", (event, note_name) => {
-  getData(note_name);
+  os.getData(note_name, DATA_DIR);
+  //getData(note_name);
 });
 
 ipcMain.on("deleteNote", (event, note_name) => {
-  deleteNote(note_name);
+  os.deleteNote(note_name,DATA_DIR);
+  //deleteNote(note_name);
 });
 
 ipcMain.on("renameNote", (event, note_names) => {
-  renameNote(note_names[0], note_names[1]);
+  os.renameNote(note_names[0], note_names[1],DATA_DIR);
+  //renameNote(note_names[0], note_names[1]);
 });
 
 ipcMain.on("searchNotes", (event, pattern) => {
-  search(pattern);
+  os.search(pattern,DATA_DIR);
+  //search(pattern);
 });

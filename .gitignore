@@ -44,3 +44,12 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+src/electron/specs/resources/2345
+src/electron/specs/resources/7654
+src/electron/specs/resources/9876
+src/electron/specs/resources/1234
+src/electron/specs/resources/3456
+src/electron/specs/resources/4567
+src/electron/specs/resources/5678
+src/electron/specs/resources/new_dir
+src/electron/specs/resources/new_note
