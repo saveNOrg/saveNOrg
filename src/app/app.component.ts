@@ -1,83 +1,123 @@
-import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
+import { Component, OnInit, NgZone, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { NotesNodeImp } from './utils/NotesNodeImp';
 import { ResizeEvent } from 'angular-resizable-element';
 import { ElectronServiceFile } from './service/electron.service.files';
-import { Store } from '@ngrx/store';
-import { AppState } from './reducers';
+import { Tab } from './utils/interfaces';
+
 import { Subject } from 'rxjs'
 import { takeUntil } from 'rxjs/operators';
-import {FormControl} from '@angular/forms';
+import { FormControl } from '@angular/forms';
+import { getgid } from 'process';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
-export class AppComponent implements OnInit, OnDestroy{
+export class AppComponent implements OnInit, OnDestroy {
   title = 'myLifeNotes';
-  public style: object = {};
-  isSelected:boolean=false;
-  NOTES_DATA: NotesNodeImp[]=[];
+  NOTES_DATA: NotesNodeImp[] = [];
 
-  tabs = ['First', 'Second', 'Third'];
+  tabs: Tab[] = [{
+    name: 'Welcome',
+    id: this.getFileId(),
+    order: 0,
+    icon: 'none'
+  }, {
+    name: 'Work',
+    id: this.getFileId()+'W',
+    order: 1,
+    icon: 'none'
+  }, {
+    name: 'Technical',
+    id: this.getFileId()+'T',
+    order: 2,
+    icon: 'none'
+  }, {
+    name: 'Add',
+    id: '0',
+    order: 3,
+    icon: 'none'
+  }];
   selected = new FormControl(0);
+  renamingTabId:string=''
+  renamingTabName:string=''
 
   private destroy$: Subject<void> = new Subject<void>();
-  
-  ngOnInit(){
+
+  ngOnInit() {
     this.electron_service.notes.pipe(takeUntil(this.destroy$))
-    .subscribe( notes =>{
-      
-      notes.forEach( note => {
-        let name_parts = note.split('-'); 
-        let notesObj =new NotesNodeImp(Number.parseInt(name_parts[0]));
-        notesObj.name = note;
-        notesObj.label = name_parts[1];
-        this.NOTES_DATA.push(notesObj);
-      });
-      this.zone.run(() => this.NOTES_DATA );
-    })
-    this.store_service.select(state => state).pipe(takeUntil(this.destroy$))
-    .subscribe( state => {
-      this.isSelected =  state.note.note != null;
-    });
+      .subscribe(notes => {
+
+        notes.forEach(note => {
+          let name_parts = note.split('-');
+          let notesObj = new NotesNodeImp(Number.parseInt(name_parts[0]));
+          notesObj.name = note;
+          notesObj.label = name_parts[1];
+          this.NOTES_DATA.push(notesObj);
+        });
+        this.zone.run(() => this.NOTES_DATA);
+      })
+
   }
 
 
   constructor(private electron_service: ElectronServiceFile,
-              public zone: NgZone,
-              private store_service: Store<AppState>){
+    public zone: NgZone) {
     this.electron_service.loadFiles();
-    
+
   }
-  
-  onResizeEnd(event: ResizeEvent): void {
 
-    this.style = {
-      position: 'fixed',
-      left: `${event.rectangle.left}px`,
-      top: `${event.rectangle.top}px`,
-      width: `${event.rectangle.width}px`,
-      height: `${event.rectangle.height}px`
-    };
-  } 
-
-
-  ngOnDestroy(){
+  ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
   }
 
   addTab(selectAfterAdding: boolean) {
-    this.tabs.push('New');
+    let newTab:Tab={
+      name:'New',
+      id: this.getFileId(),
+      order: this.tabs.length,
+      icon:'none'
+    }
+    this.tabs.splice(this.tabs.length-1,0, newTab);
 
     if (selectAfterAdding) {
       this.selected.setValue(this.tabs.length - 1);
     }
+    //TODO Service to update tabs file
   }
 
-  removeTab(index: number) {
+  deleteTab(tab:Tab) {
+    let index = this.tabs.findIndex( it => it.id == tab.id)
     this.tabs.splice(index, 1);
+    //TODO 
+    //Service to update tabs file
   }
+
+  renameTab(tab:Tab){
+    this.renamingTabId = tab.id
+    this.renamingTabName = tab.name
+  }
+
+  setTabName(){
+    let index = this.tabs.findIndex( it => it.id == this.renamingTabId)
+    this.tabs[index].name = this.renamingTabName
+    this.renamingTabId=''
+    //TODO 
+    //Service to update tabs file
+  }
+
+  getFileId(): string {
+    let now = new Date();
+    let id: string = now.getFullYear() + '' +
+        now.getMonth() + '' +
+        now.getDate() + '' +
+        now.getHours() + '' +
+        now.getMinutes() + '' +
+        now.getSeconds();
+    return id;
+}
 
 }

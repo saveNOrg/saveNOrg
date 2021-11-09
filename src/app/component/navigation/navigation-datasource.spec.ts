@@ -1,5 +1,5 @@
 import { NotesTreeDataSource } from './navigation-datasource';
-import { NotesNode } from '../../utils/model';
+import { NotesNode } from '../../utils/interfaces';
 
 fdescribe('NotesTreeDataSource', () => {
     let data_source:NotesTreeDataSource;

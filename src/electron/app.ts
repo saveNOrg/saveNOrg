@@ -6,63 +6,6 @@ import * as os from './library/filesystem.component';
 
 let win: BrowserWindow;
 
-const DATA_DIR = path.join(__dirname, 'data');
-/*
-function getNotes() {
-  if (fs.existsSync(DATA_DIR)) {
-    let files = fs.readdirSync(DATA_DIR, { withFileTypes: true },);
-    let notes = files.map(file => `${file.name}`);
-    win.webContents.send("getNotesResponse", notes);
-  }
-}
-
-function deleteNote(note_name: string) {
-  let file_name = path.join(DATA_DIR, note_name);
-  if (fs.existsSync(file_name)) {
-    fs.unlinkSync(file_name);
-  }
-}
-
-function renameNote(existing_note: string, note_name: string) {
-  let existing_file_name = path.join(DATA_DIR, existing_note);
-  let file_name = path.join(DATA_DIR, note_name);
-  
-  if (fs.existsSync(existing_file_name)) {
-    fs.renameSync(existing_file_name,file_name);
-  }
-}
-
-function getData(note_name: string) {
-  let file_name = path.join(DATA_DIR, note_name);
-  if (fs.existsSync(file_name)) {
-    try {
-      const data = fs.readFileSync(file_name, 'utf-8');
-      win.webContents.send("getNoteDataResponse", data);
-    } catch (err) {
-      console.error(err)
-    }
-  } else {
-    win.webContents.send("getNoteDataResponse", null);
-  }
-
-}
-
-function search(pattern:string){
-  let files = fs.readdirSync(DATA_DIR, { withFileTypes: true },);
-  let data:string[] = [];
-  files.forEach( file =>{
-    if( file.isFile ){
-      let note_data = fs.readFileSync(path.join(DATA_DIR, file.name), 'utf-8');
-      let matched = note_data.indexOf(pattern);
-      if( matched >= 0 ){
-        data.push(file.name)
-      }
-    }
-  });
-  win.webContents.send("searchResponse", data);
-}
-*/
-
 function createWindow() {
 
   win = new BrowserWindow(
@@ -113,40 +56,46 @@ app.on('window-all-closed', () => {
   }
 });
 
-ipcMain.on("loadNotes", (event) => {
-  os.getNotes(DATA_DIR);
-  //getNotes();
+ipcMain.on("initProject", (event, groupDir) => {
+  os.initProductDir(groupDir)
 });
 
-ipcMain.on("saveData", (event, note_name, note_data) => {
-  // if (!fs.existsSync(DATA_DIR)) {
-  //   fs.mkdirSync(DATA_DIR);
-  // }
-
-  // let file_name = path.join(DATA_DIR, note_name);
-
-  // fs.writeFile(file_name, JSON.stringify(note_data), 'utf-8', function (err) {
-  //   if (err) return console.log(err);
-  // });
-  os.createNote(note_name, note_data, DATA_DIR);
+ipcMain.on("createTab", (event) => {
+  //TODO
 });
 
-ipcMain.on("openNote", (event, note_name) => {
-  os.getData(note_name, DATA_DIR);
-  //getData(note_name);
+ipcMain.on("deleteTab", (event) => {
+  //TODO
 });
 
-ipcMain.on("deleteNote", (event, note_name) => {
-  os.deleteNote(note_name,DATA_DIR);
-  //deleteNote(note_name);
+ipcMain.on("renameTab", (event) => {
+  //TODO
 });
 
-ipcMain.on("renameNote", (event, note_names) => {
-  os.renameNote(note_names[0], note_names[1],DATA_DIR);
-  //renameNote(note_names[0], note_names[1]);
+ipcMain.on("loadNotes4Group", (event) => {
+  //TODO
 });
 
-ipcMain.on("searchNotes", (event, pattern) => {
-  os.search(pattern,DATA_DIR);
-  //search(pattern);
+ipcMain.on("saveData", (event, note_name, note_data, groupDir) => {
+  os.saveNote(note_name, note_data, groupDir)
+});
+
+ipcMain.on("createNote", (event, note_name, note_data, metadata, groupDir) => {
+  os.createNote(note_name, note_data, metadata, groupDir)
+});
+
+ipcMain.on("openNote", (event, note_name, groupDir) => {
+  os.getData(note_name, groupDir);
+});
+
+ipcMain.on("deleteNote", (event, note_name, metadata, groupDir) => {
+  os.deleteNote(note_name,groupDir,metadata);
+});
+
+ipcMain.on("renameNote", (event, metadata, groupDir) => {
+  os.updateMetadata(groupDir, metadata);
+});
+
+ipcMain.on("searchNotes", (event, pattern, groupDir) => {
+  os.search(pattern,groupDir);
 });

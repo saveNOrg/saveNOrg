@@ -1,4 +1,4 @@
-import { NotesNode } from '../../utils/model';
+import { NotesNode } from '../../utils/interfaces';
 
 export class NotesTreeDataSource {
   

@@ -1,29 +1,18 @@
 <div class="toolbar-container" fxLayout="column" fxLayoutAlign="center stretch">
     <div fxLayout="row" fxLayoutAlign="space-between center">
-        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="4" class="toolbar-button">
-            <button mat-icon-button aria-label="Add note" class="toolbar-btn" (click)="addNote()" fxLayout="column"
-                fxLayoutAlign="center center" [ngClass]="{'toolbar-btn-selected': message=='add'}">
-                <mat-icon>note_add</mat-icon>
-                <span>Add</span>
-            </button>
-            <button mat-icon-button aria-label="Delete note" class="toolbar-btn" (click)="deleteNote()"
-                fxLayout="column" fxLayoutAlign="center center" [ngClass]="{'toolbar-btn-selected': message=='delete'}">
-                <mat-icon>delete</mat-icon>
-                <span>Remove</span>
-            </button>
-            <button mat-icon-button aria-label="Rename note" class="toolbar-btn" (click)="renameNote()"
-                fxLayout="column" fxLayoutAlign="center center" [ngClass]="{'toolbar-btn-selected': message=='rename'}">
-                <mat-icon>edit</mat-icon>
-                <span>Rename</span>
-            </button>
-        </div>
+        <mat-form-field appearance="outline" floatLabel="never">
+            <mat-label>Base Directory</mat-label>
+            <input matInput placeholder="Base Directory" size="20" (keyup.Enter)="updateBaseDir()" [(ngModel)]="base_dir"
+                class="toolbar-input" />
+            <img alt="Search" src="assets/baseline_create_black_24dp.png" matSuffix/>
+        </mat-form-field>
         <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="4" >
 
             <mat-form-field appearance="outline" floatLabel="never">
                 <mat-label>Search</mat-label>
                 <input matInput placeholder="Search" size="20" (keyup.Enter)="search()" [(ngModel)]="search_keyword"
                     class="toolbar-input" />
-                <mat-icon aria-hidden="false" aria-label="Search notes" matSuffix>search</mat-icon>
+                <img alt="Search" src="assets/baseline_search_black_18dp.png" matSuffix/>
             </mat-form-field>
             <div class="search-results">
                 <span *ngIf="match_notes.length>=0">{{match_notes.length==0 ? 0:match_index+1}} of {{match_notes.length}}</span>

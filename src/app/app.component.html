@@ -1,21 +1,30 @@
 <div class="app-container" fxLayout="column" fxLayoutAlign="start stretch">
+  <!-- Toolbar -->
   <app-toolbar class="app-buttons"></app-toolbar>
 
-  <mat-tab-group [selectedIndex]="selected.value" (selectedIndexChange)="selected.setValue($event)">
-    <mat-tab *ngFor="let tab of tabs; let index = index" [label]="tab">
-      <div class="app-content" fxLayout="row" fxLayoutAlign="start stretch">
+  <!-- Tabs -->
+  <mat-tab-group class="app-tag-group" [selectedIndex]="selected.value" 
+  (selectedIndexChange)="selected.setValue($event)">
+    <mat-tab *ngFor="let tab of tabs; let index = index" >
+      
+      <ng-template mat-tab-label >
+        <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="16px" >
+          <span *ngIf="tab.name != 'Add' && renamingTabId != tab.id" (dblclick)="renameTab(tab)">{{tab.name}}</span>
+          <input *ngIf="renamingTabId == tab.id" placeholder="{{tab.name}}" (keyup.Enter)="setTabName()" 
+              type="text" (focusout)="setTabName()" [(ngModel)]="renamingTabName" 
+               />
+          <img  *ngIf="tab.name != 'Add'" src="assets/baseline_cancel_black_18dp.png" alt="Delete Tab" 
+          (click)="deleteTab(tab)"/>
+          <img  *ngIf="tab.name == 'Add'" src="assets/baseline_add_circle_outline_black_24dp.png" 
+          alt="Add Tab" (click)="addTab(true)"/>
+        </div>
+      </ng-template>
 
-        <div class="app-nav">
-          <app-navigation [data_saved]="NOTES_DATA"></app-navigation>
-        </div>
-        <div class="app-data" mwlResizable (resizeEnd)="onResizeEnd($event)" [resizeEdges]="{ left: true }"
-          [ngStyle]="style">
-          <app-welcome *ngIf="!isSelected"></app-welcome>
-          <app-data *ngIf="isSelected"></app-data>
-        </div>
+      <!-- Container of the tab -->
+      <div class="app-tab-body">
+        <app-tab-body ></app-tab-body>
       </div>
 
     </mat-tab>
   </mat-tab-group>
-
 </div>

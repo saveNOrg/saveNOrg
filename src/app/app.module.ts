@@ -22,6 +22,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../environments/environment';
 import { EffectsModule } from '@ngrx/effects';
 import { FileEffects } from './effects/file.effects';
+import { TabBodyComponent } from './component/tab-body/tab-body.component';
 
 const  toolbar= [
     ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
@@ -51,7 +52,8 @@ const  toolbar= [
     ToolbarComponent,
     NotesTreeComponent,
     NotesDataComponent,
-    WelcomeComponent
+    WelcomeComponent,
+    TabBodyComponent
   ],
   imports: [
     BrowserModule,

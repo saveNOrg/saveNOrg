@@ -1,4 +1,4 @@
-import { NotesNode } from './model'
+import { NotesNode } from './interfaces'
 
 /*
 * 

@@ -18,6 +18,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
   message: string = '';
   node_selected: NotesNodeImp = null;
   search_keyword: string = '';
+  base_dir:string ='';
   match_notes: string[] = [];
   match_index:number=0;
 
@@ -91,6 +92,10 @@ export class ToolbarComponent implements OnInit, OnDestroy {
 
   search() {
     this.os_service.searchNotes(this.search_keyword);
+
+  }
+
+  updateBaseDir(){
 
   }
 

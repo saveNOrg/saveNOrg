@@ -1,0 +1,22 @@
+.app-content{
+    height: 100%;
+    border: 2px solid #5c7c96;
+}
+
+.app-nav{
+    background: lavender;
+    min-width: 100px;
+    box-sizing: border-box; 
+    flex: 1 1 auto;
+}
+
+.app-note-tools{
+    padding-left: 4px;
+}
+
+.app-data{
+    background: ivory;
+    box-sizing: border-box;
+    flex: 3 3 auto;
+    border-left: 1px solid gray; 
+}
