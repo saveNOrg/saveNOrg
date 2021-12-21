@@ -1,10 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NotesNodeImp } from '../../utils/NotesNodeImp';
 import { ResizeEvent } from 'angular-resizable-element';
-import { Store } from '@ngrx/store';
-import { AppState } from '../../reducers';
-import { AddNote } from '../../actions/note.actions';
-
+import { BaseDirService } from 'src/app/service/baseDir.service';
 import { Subject } from 'rxjs'
 import { takeUntil } from 'rxjs/operators';
 
@@ -19,17 +16,19 @@ export class TabBodyComponent implements OnInit {
   public style: object = {};
   isSelected:boolean=false;
   node_selected: NotesNodeImp = null;
+  baseDir:string='';
   
   private destroy$: Subject<void> = new Subject<void>();
 
-  constructor(private store_service: Store<AppState>) { }
+  constructor(private baseDirService:BaseDirService) { }
 
   ngOnInit(): void {
-
-    this.store_service.select(state => state).pipe(takeUntil(this.destroy$))
-    .subscribe( state => {
-      this.isSelected =  state.note.note != null;
-    });
+    this.baseDirService.baseDirMetadata.pipe(takeUntil(this.destroy$))
+      .subscribe((sourceBaseDir: string) => this.baseDir = sourceBaseDir);
+    // this.store_service.select(state => state).pipe(takeUntil(this.destroy$))
+    // .subscribe( state => {
+    //   this.isSelected =  state.note.note != null;
+    // });
   }
 
   onResizeEnd(event: ResizeEvent): void {
@@ -44,7 +43,6 @@ export class TabBodyComponent implements OnInit {
   }
 
   addNote() {
-    this.store_service.dispatch(new AddNote({ note: this.node_selected }));
   }
 
 }

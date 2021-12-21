@@ -6,11 +6,12 @@ import { IpcRenderer } from 'electron';
 @Injectable({
   providedIn: 'root'
 })
-export class ElectronServiceData {
+export class ElectronDataService {
 
   private ipc: IpcRenderer
-  data = new BehaviorSubject<any>({});
-  matched_notes=new BehaviorSubject<string[]>([]);
+  private data = new BehaviorSubject<any>({});
+  private matched_notes=new BehaviorSubject<string[]>([]);
+  currentMessage = this.matched_notes.asObservable();
 
   constructor() {
     if ((<any>window).require) {

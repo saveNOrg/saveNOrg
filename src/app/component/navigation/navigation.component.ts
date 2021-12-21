@@ -1,10 +1,6 @@
 import { Component, OnInit, ViewEncapsulation, Input } from '@angular/core';
 import { NotesNodeImp } from '../../utils/NotesNodeImp';
-import { ElectronServiceData } from '../../service/electron.service.data';
-import { AppState, noteSelector, fileSelector } from '../../reducers';
-import { SelectNote, RenameNote, DeleteNote, NoteActionTypes } from '../../actions/note.actions';
-import { DeleteFile, SaveFile } from '../../actions/file.actions';
-import { Store } from '@ngrx/store';
+import { ElectronDataService } from '../../service/electron.data.service';
 import { Subject } from 'rxjs'
 import { takeUntil } from 'rxjs/operators';
 import { stat } from 'fs';
@@ -27,81 +23,80 @@ export class NotesTreeComponent implements OnInit {
 
   @Input('data_saved') 
   set data_saved (d: NotesNodeImp[]){
-    this.data = d;
+    //this.data = d;
   }
 
-  constructor( private os_service: ElectronServiceData,
-               private store_service: Store<AppState>) {
+  constructor( private os_service: ElectronDataService) {
   }
 
   ngOnInit() {
-    this.store_service.select(noteSelector).pipe(takeUntil(this.destroy$))
-    .subscribe( state => {
-        if( state.note ){
-          this.node_selected = new NotesNodeImp(state.note.level, state.note.selected)
-          this.node_selected.name = state.note.name;
-          this.node_selected.label = state.note.label;
-          this.node_selected.children = Object.assign([], state.note.children);
-        }else{
-          this.node_selected = state.note;
-        }
+    // this.store_service.select(noteSelector).pipe(takeUntil(this.destroy$))
+    // .subscribe( state => {
+    //     if( state.note ){
+    //       this.node_selected = new NotesNodeImp(state.note.level, state.note.selected)
+    //       this.node_selected.name = state.note.name;
+    //       this.node_selected.label = state.note.label;
+    //       this.node_selected.children = Object.assign([], state.note.children);
+    //     }else{
+    //       this.node_selected = state.note;
+    //     }
         
-        this.exec_action( state.type );  
-    });
-    this.store_service.select(fileSelector).pipe(takeUntil(this.destroy$))
-    .subscribe( state => {
-      if( state.file ){
-        this.note_content = state.data;
-      }
-    });
+    //     this.exec_action( state.type );  
+    // });
+    // this.store_service.select(fileSelector).pipe(takeUntil(this.destroy$))
+    // .subscribe( state => {
+    //   if( state.file ){
+    //     this.note_content = state.data;
+    //   }
+    // });
   }
 
   
   exec_action(action: string) {
     let index = this.data.findIndex(node => node.name == this.node_selected.name && node.level == this.node_selected.level);
           
-    switch (action) {
-      case NoteActionTypes.AddNote: {
+    // switch (action) {
+    //   case NoteActionTypes.AddNote: {
 
-        if (this.data.length == 0 && this.node_selected == null) {
-          this.addNode(1);
-        } else {
-          this.addNode(this.node_selected.level);
-          //Add children
-          // if (!this.data[index].children) {
-              //   this.data[index].children = []
-              // }
-          //}
-        }
+    //     if (this.data.length == 0 && this.node_selected == null) {
+    //       this.addNode(1);
+    //     } else {
+    //       this.addNode(this.node_selected.level);
+    //       //Add children
+    //       // if (!this.data[index].children) {
+    //           //   this.data[index].children = []
+    //           // }
+    //       //}
+    //     }
 
-        break;
-      };
-      case NoteActionTypes.DeleteNote: {
-        if (index >= 0) {
-          this.data.splice(index, 1);
-          this.store_service.dispatch(new DeleteFile({file: this.node_selected, data: {"ops":[]} } ));
-          this.node_selected = null;
-        }
-        break;
-      };
-      case NoteActionTypes.ClearNameNote: {
-        this.renameNode();
-        break;
-      };
-      case NoteActionTypes.RenameNote: {
+    //     break;
+    //   };
+    //   case NoteActionTypes.DeleteNote: {
+    //     if (index >= 0) {
+    //       this.data.splice(index, 1);
+    //       this.store_service.dispatch(new DeleteFile({file: this.node_selected, data: {"ops":[]} } ));
+    //       this.node_selected = null;
+    //     }
+    //     break;
+    //   };
+    //   case NoteActionTypes.ClearNameNote: {
+    //     this.renameNode();
+    //     break;
+    //   };
+    //   case NoteActionTypes.RenameNote: {
 
-        this.selectNode(this.node_selected)
-        break;
-      };
-      case NoteActionTypes.SelectNote: {
+    //     this.selectNode(this.node_selected)
+    //     break;
+    //   };
+    //   case NoteActionTypes.SelectNote: {
         
-        break;
-      };
-      default: {
-        console.log("nav default") 
-        break;
-      };
-    }
+    //     break;
+    //   };
+    //   default: {
+    //     console.log("nav default") 
+    //     break;
+    //   };
+    // }
   }
 
   selectNode(devent: NotesNodeImp) {
@@ -110,20 +105,20 @@ export class NotesTreeComponent implements OnInit {
     //Only fire when the new node selected is different
     //than the previous node selected
     if( this.node_selected && this.node_selected.label != event.label){
-      this.store_service.dispatch( new SaveFile({file: this.node_selected, data: this.note_content}))
-      this.store_service.dispatch(new SelectNote({note: event}));
+      //this.store_service.dispatch( new SaveFile({file: this.node_selected, data: this.note_content}))
+      //this.store_service.dispatch(new SelectNote({note: event}));
     }
-    this.store_service.dispatch(new SelectNote({note: event}));
+    //this.store_service.dispatch(new SelectNote({note: event}));
   }
 
   addNode(level:number) {
     if( this.node_selected && this.node_selected.label != "" ){
-      this.store_service.dispatch( new SaveFile({file: this.node_selected, data: this.note_content}))
+      //this.store_service.dispatch( new SaveFile({file: this.node_selected, data: this.note_content}))
     }
 
     this.data.push(new NotesNodeImp(level, true));
     this.node_selected = new NotesNodeImp(level, true);
-    this.store_service.dispatch(new SelectNote({note: this.node_selected}));
+    //this.store_service.dispatch(new SelectNote({note: this.node_selected}));
     setTimeout(() => { // this will make the execution after the above boolean has changed
       (<HTMLInputElement>document.getElementById("note_name_input")).focus();
     }, 0);
@@ -140,7 +135,7 @@ export class NotesTreeComponent implements OnInit {
 
     this.data[selected].selected = true;
   
-    this.store_service.dispatch( new RenameNote({note: this.data[selected]}));
+    //this.store_service.dispatch( new RenameNote({note: this.data[selected]}));
   }
 
   renameNode(){

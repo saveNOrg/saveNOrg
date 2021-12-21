@@ -1,11 +1,9 @@
 import { Component, OnInit, ViewEncapsulation, OnDestroy } from '@angular/core';
 import { NotesNodeImp } from '../../utils/NotesNodeImp';
-import { Store } from '@ngrx/store';
-import { AppState, noteSelector } from '../../reducers';
-import { ClearNameNote, AddNote, DeleteNote, SelectNote } from '../../actions/note.actions';
 import { Subject } from 'rxjs'
 import { takeUntil } from 'rxjs/operators';
-import { ElectronServiceData } from '../../service/electron.service.data';
+import { ElectronDataService } from '../../service/electron.data.service';
+import { BaseDirService } from 'src/app/service/baseDir.service';
 
 @Component({
   selector: 'app-toolbar',
@@ -18,85 +16,58 @@ export class ToolbarComponent implements OnInit, OnDestroy {
   message: string = '';
   node_selected: NotesNodeImp = null;
   search_keyword: string = '';
-  base_dir:string ='';
+  base_dir: string = '';
   match_notes: string[] = [];
-  match_index:number=0;
+  match_index: number = 0;
+  baseDir: string = '';
+  editBaseDir: boolean = false;
 
   private destroy$: Subject<void> = new Subject<void>();
 
 
-  constructor(private os_service: ElectronServiceData,
-    private store_service: Store<AppState>) { }
+  constructor(private os_service: ElectronDataService,
+    private baseDirService: BaseDirService) { }
 
   ngOnInit(): void {
-    this.store_service.select(noteSelector).pipe(takeUntil(this.destroy$))
-      .subscribe(state => {
-        if (state.note) {
-          this.node_selected = state.note;
-          this.message = state.type;
+    this.baseDirService.baseDirMetadata.pipe(takeUntil(this.destroy$))
+      .subscribe((baseDirMetadata: any) => {
+        console.log("toolbar sourceBaseDir ", baseDirMetadata)
+        if( baseDirMetadata.extra && baseDirMetadata.extra['baseDir'] ){
+          this.baseDir = baseDirMetadata.extra['baseDir'];
         }
-      });
-    this.os_service.matched_notes.pipe(takeUntil(this.destroy$))
-      .subscribe(matched_notes => {
-        this.match_notes = matched_notes;
-        if( this.match_notes.length > 0 ){
-          this.match_index = 0;
-          this.store_service.dispatch(new SelectNote( { note: this.getNotesNodeImp(this.match_notes[this.match_index])} ) )
-        }
+        //this.baseDir = sourceBaseDir
       });
   }
 
-  getNotesNodeImp(note_name: string) {
-    let name_parts = note_name.split('-');
-    let notesObj = new NotesNodeImp(Number.parseInt(name_parts[0]));
-    notesObj.name = note_name;
-    notesObj.label = name_parts[1];
-    return notesObj;
-  }
-
-  previous(){
+  previous() {
     let index = this.match_notes.findIndex(note_name => this.node_selected.name == note_name);
-    if( index == 0 ){
-      this.match_index = this.match_notes.length-1;
-    }else{
-      this.match_index = index -1 ;
+    if (index == 0) {
+      this.match_index = this.match_notes.length - 1;
+    } else {
+      this.match_index = index - 1;
     }
-    this.store_service.dispatch(new SelectNote({ note: this.getNotesNodeImp(this.match_notes[this.match_index])  }))
   }
 
-  next(){
+  next() {
     let index = this.match_notes.findIndex(note_name => this.node_selected.name == note_name);
-    if( index == this.match_notes.length-1 ){
+    if (index == this.match_notes.length - 1) {
       this.match_index = 0;
-    }else{
-      this.match_index = index+1;
-    }
-    this.store_service.dispatch(new SelectNote({ note: this.getNotesNodeImp(this.match_notes[this.match_index])  }))
-  }
-
-  renameNote() {
-    if (this.node_selected) {
-      this.store_service.dispatch(new ClearNameNote({ note: this.node_selected }));
-    }
-  }
-
-  addNote() {
-    this.store_service.dispatch(new AddNote({ note: this.node_selected }));
-  }
-
-  deleteNote() {
-    if (this.node_selected) {
-      this.store_service.dispatch(new DeleteNote({ note: this.node_selected }));
+    } else {
+      this.match_index = index + 1;
     }
   }
 
   search() {
     this.os_service.searchNotes(this.search_keyword);
-
   }
 
-  updateBaseDir(){
+  updateBaseDir() {
+    this.editBaseDir = true;
+  }
 
+  setBaseDir() {
+    this.editBaseDir = false;
+    this.baseDirService.setWorkspaceDir(this.baseDir);
   }
 
   ngOnDestroy() {

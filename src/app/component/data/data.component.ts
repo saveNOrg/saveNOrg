@@ -1,13 +1,9 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { EditorChangeContent, EditorChangeSelection } from 'ngx-quill'
 import Quill from 'quill'
-import { ElectronServiceData } from '../../service/electron.service.data';
+import { ElectronDataService } from '../../service/electron.data.service';
 import { interval, Subscription, VirtualTimeScheduler } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { Store } from '@ngrx/store';
-import { AppState, noteSelector, fileSelector } from '../../reducers';
-import { FileActionTypes, DirtyFile } from '../../actions/file.actions';
-import { NoteActionTypes } from '../../actions/note.actions';
 import { NotesNodeImp } from '../../utils/NotesNodeImp';
 import { Subject } from 'rxjs'
 import { takeUntil } from 'rxjs/operators';
@@ -15,7 +11,8 @@ import { takeUntil } from 'rxjs/operators';
 @Component({
   selector: 'app-data',
   templateUrl: './data.component.html',
-  styleUrls: ['./data.component.scss']
+  styleUrls: ['./data.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class NotesDataComponent implements OnInit, OnDestroy {
 
@@ -30,72 +27,71 @@ export class NotesDataComponent implements OnInit, OnDestroy {
 
   private destroy$: Subject<void> = new Subject<void>();
 
-  constructor(private os_service: ElectronServiceData,
-    private store_service: Store<AppState>) {
+  constructor(private os_service: ElectronDataService) {
   }
 
   ngOnInit(): void {
 
-    this.store_service.select(fileSelector).pipe(takeUntil(this.destroy$))
-      .subscribe(state => {
+    // this.store_service.select(fileSelector).pipe(takeUntil(this.destroy$))
+    //   .subscribe(state => {
 
-        if (state.file) {
+    //     if (state.file) {
 
-          this.node_selected = state.file;
-          let action = state.type;
-          let data = state.data;
+    //       this.node_selected = state.file;
+    //       let action = state.type;
+    //       let data = state.data;
 
-          if (this.node_selected && data) {
-            this.data = data;
-          }
-          this.exec_action(action);
-        }
-      });
+    //       if (this.node_selected && data) {
+    //         this.data = data;
+    //       }
+    //       this.exec_action(action);
+    //     }
+    //   });
 
-    this.store_service.select(noteSelector).pipe(takeUntil(this.destroy$))
-      .subscribe(state => {
-        if (state.type === NoteActionTypes.RenameNote) {
-          if (this.node_selected.label) {
-            this.os_service.renameNote(this.node_selected.name, state.note.name);
-          }
-          this.node_selected = state.note;
-        }
-      });
+    // this.store_service.select(noteSelector).pipe(takeUntil(this.destroy$))
+    //   .subscribe(state => {
+    //     if (state.type === NoteActionTypes.RenameNote) {
+    //       if (this.node_selected.label) {
+    //         this.os_service.renameNote(this.node_selected.name, state.note.name);
+    //       }
+    //       this.node_selected = state.note;
+    //     }
+    //   });
 
     this.subscription = this.source.pipe(takeUntil(this.destroy$))
       .subscribe(val => this.saveData());
   }
 
   exec_action(action: string) {
-    switch (action) {
-      case FileActionTypes.SaveFile: {
-        this.saveData();
-        break;
-      }
-      case FileActionTypes.DeleteFile: {
-        this.updateData();
-        this.os_service.deleteNote(this.node_selected.name);
-        this.node_selected = null;
-        this.dirty = false;
+    // switch (action) {
+    //   case FileActionTypes.SaveFile: {
+    //     this.saveData();
+    //     break;
+    //   }
+    //   case FileActionTypes.DeleteFile: {
+    //     this.updateData();
+    //     this.os_service.deleteNote(this.node_selected.name);
+    //     this.node_selected = null;
+    //     this.dirty = false;
 
-        break;
-      }
-      // case FileActionTypes.DirtyFile: {
-      //   this.saveData();
+    //     break;
+    //   }
+    //   // case FileActionTypes.DirtyFile: {
+    //   //   this.saveData();
 
-      //   break;
-      // }
-      case FileActionTypes.LoadFile: {
-        if (this.editor) {
-          this.updateData();
-        }
-        break;
-      }
-      default: {
-        console.log("Default type ", action);
-        break;
-      }
-    }
+    //   //   break;
+    //   // }
+    //   case FileActionTypes.LoadFile: {
+    //     if (this.editor) {
+    //       this.updateData();
+    //     }
+    //     break;
+    //   }
+    //   default: {
+    //     console.log("Default type ", action);
+    //     break;
+    //   }
+    // }
   }
 
   updateData() {

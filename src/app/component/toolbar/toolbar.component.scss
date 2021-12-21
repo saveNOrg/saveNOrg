@@ -4,6 +4,35 @@
     background: lavender;
 }
 
+.toolbar-basedir-empty{
+    font-style: italic;
+    margin-left: 8px;
+    font-weight: 100;
+    color: gray;
+}
+
+.toolbar-basedir{
+    margin-left: 8px;
+    font-weight: 600;
+    color: black;
+    font-family: Garamond, serif;
+    font-size: large;
+    margin-right: 4px;
+}
+
+.toolbar-basedir-btn{
+    opacity: 0.2;
+}
+
+.toolbar-basedir-btn:hover{
+    opacity: 1;
+    cursor: pointer;
+}
+
+.toolbar-basedir-input{
+    margin-left: 8px;
+}
+
 .toolbar-btn {
 	background:#ccc;
     border-radius:3px;

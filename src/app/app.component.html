@@ -9,7 +9,8 @@
       
       <ng-template mat-tab-label >
         <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="16px" >
-          <span *ngIf="tab.name != 'Add' && renamingTabId != tab.id" (dblclick)="renameTab(tab)">{{tab.name}}</span>
+          <span *ngIf="tab.name != 'Add' && renamingTabId != tab.id" 
+          (click)="loadTabData(tab)" (dblclick)="renameTab(tab)">{{tab.name}}</span>
           <input *ngIf="renamingTabId == tab.id" placeholder="{{tab.name}}" (keyup.Enter)="setTabName()" 
               type="text" (focusout)="setTabName()" [(ngModel)]="renamingTabName" 
                />

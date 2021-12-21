@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  save_time: 10000
+  save_time: 10000,
+  serverUrl:'http://localhost:4200'
 };
 
 /*

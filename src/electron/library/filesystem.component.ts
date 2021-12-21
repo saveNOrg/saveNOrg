@@ -259,12 +259,16 @@ export let initProductDir = (dir: string) => {
     let init_metadata_tab: Tab[] = Object.assign([], INIT_METADATA_TAB)
     init_metadata_tab[0].id = welcomeTabId;
     let rootResult = initMetadata(dir,init_metadata_tab);
+    rootResult.extra= {"tabs": init_metadata_tab};
+    rootResult.extra['baseDir'] = dir;
+
 
     if( rootResult.code == 0 ){
         //Create the file metadata.json
         let init_metadata_file: File[] = []
         let groupDir = path.join(dir, welcomeTabId);
-        return initMetadata(groupDir, null, init_metadata_file);
+        let welcome_note_result =  initMetadata(groupDir, null, init_metadata_file);
+        rootResult.extra['note'] = welcome_note_result
     }
     return rootResult;
 }

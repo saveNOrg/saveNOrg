@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { ElectronServiceFile } from './electron.service.files';
+import { ElectronFileService } from './electron.file.service';
 
 describe('ElectronService', () => {
-  let service: ElectronServiceFile;
+  let service: ElectronFileService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(ElectronServiceFile);
+    service = TestBed.inject(ElectronFileService);
   });
 
   it('should be created', () => {

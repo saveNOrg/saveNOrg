@@ -16,13 +16,12 @@ import { ToolbarComponent } from './component/toolbar/toolbar.component';
 import { NotesTreeComponent } from './component/navigation/navigation.component';
 import { NotesDataComponent } from './component/data/data.component';
 import { WelcomeComponent } from './component/welcome/welcome.component';
-import { StoreModule } from '@ngrx/store';
-import { reducers, metaReducers } from './reducers';
-import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../environments/environment';
-import { EffectsModule } from '@ngrx/effects';
-import { FileEffects } from './effects/file.effects';
 import { TabBodyComponent } from './component/tab-body/tab-body.component';
+import { BaseDirService } from './service/baseDir.service';
+
+
+import { HttpClientModule } from '@angular/common/http';
 
 const  toolbar= [
     ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
@@ -72,11 +71,9 @@ const  toolbar= [
     }),
     FormsModule,
     ResizableModule,
-    StoreModule.forRoot(reducers, { metaReducers }),
-    !environment.production ? StoreDevtoolsModule.instrument() : [],
-    EffectsModule.forRoot([FileEffects])
+    HttpClientModule
   ],
-  providers: [],
+  providers: [BaseDirService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
