@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "myLifeNotes": {
+    "saveNOrg": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -67,18 +67,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "myLifeNotes:build"
+            "browserTarget": "saveNOrg:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "myLifeNotes:build:production"
+              "browserTarget": "saveNOrg:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "myLifeNotes:build"
+            "browserTarget": "saveNOrg:build"
           }
         },
         "test": {
@@ -116,18 +116,18 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "myLifeNotes:serve"
+            "devServerTarget": "saveNOrg:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "myLifeNotes:serve:production"
+              "devServerTarget": "saveNOrg:serve:production"
             }
           }
         }
       }
     }
   },
-  "defaultProject": "myLifeNotes",
+  "defaultProject": "saveNOrg",
   "cli": {
     "analytics": "76ae250c-7ea9-44f1-8d97-126162e57133",
     "defaultCollection": "@ngrx/schematics"

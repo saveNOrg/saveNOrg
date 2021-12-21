@@ -13,7 +13,7 @@ import { FormControl } from '@angular/forms';
   encapsulation: ViewEncapsulation.None
 })
 export class AppComponent implements OnInit, OnDestroy {
-  title = 'myLifeNotes';
+  title = 'saveNOrg';
   NOTES_DATA: NotesNodeImp[] = [];
 
   tabs: Tab[] = [];

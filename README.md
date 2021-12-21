@@ -1,4 +1,4 @@
-# MyLifeNotes
+# Save and Organize
 
 The goal of this project is to create a Notes-application with features that solve basic problems. For example, an application that can store short pieces of unrelated data, which in turn can be searchable.  There are a few nice notes applications out there, all those a very capable of what I want to do here. However, each one of them have also features that are not appealing (e.g. complexity, cost, lack of support, etc). This is an attempt to create something that is close to our needs and that can be augmented overtime.
 

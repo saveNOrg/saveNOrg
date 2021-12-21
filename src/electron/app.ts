@@ -11,7 +11,7 @@ function createWindow() {
   win = new BrowserWindow(
     {
       "width": 800, "height": 600,
-      "title": "My Life Notes...",
+      "title": "saveNOrg...",
       "icon": path.join(__dirname, `./favicon.ico`),
       webPreferences: {
         "devTools": true,

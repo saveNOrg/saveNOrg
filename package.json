@@ -1,5 +1,5 @@
 {
-  "name": "my-life-notes",
+  "name": "save-n-org",
   "version": "0.0.0",
   "main": "./dist/electron/app.js",
   "engines": {
@@ -79,7 +79,7 @@
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "my_life_notes"
+            "name": "save_and_organize"
           }
         },
         {
