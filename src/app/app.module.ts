@@ -13,12 +13,12 @@ import { ResizableModule } from 'angular-resizable-element';
 
 import { AppComponent } from './app.component';
 import { ToolbarComponent } from './component/toolbar/toolbar.component';
-import { NotesTreeComponent } from './component/navigation/navigation.component';
+import { NotesTreeComponent } from './component/notesTree/notesTree.component';
 import { NotesDataComponent } from './component/data/data.component';
 import { WelcomeComponent } from './component/welcome/welcome.component';
 import { environment } from '../environments/environment';
 import { TabBodyComponent } from './component/tab-body/tab-body.component';
-import { BaseDirService } from './service/baseDir.service';
+import { DataService } from './service/data.service';
 
 
 import { HttpClientModule } from '@angular/common/http';
@@ -73,7 +73,7 @@ const  toolbar= [
     ResizableModule,
     HttpClientModule
   ],
-  providers: [BaseDirService],
+  providers: [DataService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

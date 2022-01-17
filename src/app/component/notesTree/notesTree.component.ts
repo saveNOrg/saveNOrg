@@ -1,54 +1,55 @@
 import { Component, OnInit, ViewEncapsulation, Input } from '@angular/core';
 import { NotesNodeImp } from '../../utils/NotesNodeImp';
-import { ElectronDataService } from '../../service/electron.data.service';
+import { DataService } from '../../service/data.service';
+import { DataState, NotesNode } from '../../utils/interfaces';
 import { Subject } from 'rxjs'
 import { takeUntil } from 'rxjs/operators';
 import { stat } from 'fs';
 
 @Component({
-  selector: 'app-navigation',
-  templateUrl: './navigation.component.html',
-  styleUrls: ['./navigation.component.scss'],
+  selector: 'app-notes-tree',
+  templateUrl: './notesTree.component.html',
+  styleUrls: ['./notesTree.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
 export class NotesTreeComponent implements OnInit {
 
   new_node_name: string = '';
-  data: NotesNodeImp[]=[];
+  data: NotesNode[]=[];
 
   node_selected: NotesNodeImp=null;
   private note_content:any=null;
 
   private destroy$: Subject<void> = new Subject<void>();
 
+  tab_id:string='';
+
   @Input('data_saved') 
   set data_saved (d: NotesNodeImp[]){
     //this.data = d;
   }
 
-  constructor( private os_service: ElectronDataService) {
+  constructor(private dataService:DataService ) {
   }
 
   ngOnInit() {
-    // this.store_service.select(noteSelector).pipe(takeUntil(this.destroy$))
-    // .subscribe( state => {
-    //     if( state.note ){
-    //       this.node_selected = new NotesNodeImp(state.note.level, state.note.selected)
-    //       this.node_selected.name = state.note.name;
-    //       this.node_selected.label = state.note.label;
-    //       this.node_selected.children = Object.assign([], state.note.children);
-    //     }else{
-    //       this.node_selected = state.note;
-    //     }
-        
-    //     this.exec_action( state.type );  
-    // });
-    // this.store_service.select(fileSelector).pipe(takeUntil(this.destroy$))
-    // .subscribe( state => {
-    //   if( state.file ){
-    //     this.note_content = state.data;
-    //   }
-    // });
+
+    this.dataService.stateDataObservable.pipe(takeUntil(this.destroy$))
+      .subscribe((data: DataState) => {
+        if( data.current_tab_id ){
+          this.tab_id = data.current_tab_id;
+        }
+        if( data.current_tab_notes_metadata ){
+          this.data = data.current_tab_notes_metadata;
+        }
+        if( data.current_note_id ){
+          let selected_note = data.current_tab_notes_metadata.find( note =>{
+            return note.name == data.current_note_id;
+          })
+          this.node_selected = new NotesNodeImp(selected_note.level,true);
+        }
+      });
+
   }
 
   
@@ -127,9 +128,9 @@ export class NotesTreeComponent implements OnInit {
   setNodeName() {
     let selected = this.data.findIndex(ren_node => ren_node.label == '');
     if( this.new_node_name == ''){
-      this.data[selected].setLabel('Note_'+this.getFormattedDate());
+      this.data[selected].label= 'Note_'+this.getFormattedDate();
     }else{
-      this.data[selected].setLabel(this.new_node_name);
+      this.data[selected].label =this.new_node_name;
       this.new_node_name = '';
     }
 

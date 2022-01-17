@@ -1,10 +1,11 @@
 import { Component, OnInit, NgZone, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { NotesNodeImp } from './utils/NotesNodeImp';
 import { Tab } from './utils/interfaces';
-import { BaseDirService } from './service/baseDir.service';
+import { DataService } from './service/data.service';
 import { Subject } from 'rxjs'
 import { takeUntil } from 'rxjs/operators';
 import { FormControl } from '@angular/forms';
+import { DataState } from './utils/interfaces'
 
 @Component({
   selector: 'app-root',
@@ -17,29 +18,7 @@ export class AppComponent implements OnInit, OnDestroy {
   NOTES_DATA: NotesNodeImp[] = [];
 
   tabs: Tab[] = [];
-  /*
-  [{
-    name: 'Welcome',
-    id: this.getFileId(),
-    order: 0,
-    icon: 'none'
-  }, {
-    name: 'Work',
-    id: this.getFileId() + 'W',
-    order: 1,
-    icon: 'none'
-  }, {
-    name: 'Technical',
-    id: this.getFileId() + 'T',
-    order: 2,
-    icon: 'none'
-  }, {
-    name: 'Add',
-    id: '0',
-    order: 3,
-    icon: 'none'
-  }];
-  */
+
   selected = new FormControl(0);
   renamingTabId: string = '';
   renamingTabName: string = '';
@@ -48,24 +27,24 @@ export class AppComponent implements OnInit, OnDestroy {
   private destroy$: Subject<void> = new Subject<void>();
 
   constructor(public zone: NgZone,
-              private baseDirService: BaseDirService) {
+              private dataService: DataService) {
   }
 
   ngOnInit() {
-    this.baseDirService.baseDirMetadata.pipe(takeUntil(this.destroy$))
-    .subscribe((baseDirMetadata:any) =>{
-      if( baseDirMetadata.extra && baseDirMetadata.extra['tabs'] &&
-      baseDirMetadata.extra['tabs'].length > 0  ){
-        let firstTab ={
-          name: baseDirMetadata.extra['tabs'][0]['name'],
-          id: baseDirMetadata.extra['tabs'][0]['id'],
-          order: 0 , 
-          icon: ''
+    this.dataService.stateDataObservable.pipe(takeUntil(this.destroy$))
+    .subscribe((data:DataState) =>{
+      if( data.tabs.length > 0  ){
+        this.tabs = data.tabs;
+        if( this.tabs[this.tabs.length-1].name != 'Add'){
+          this.tabs.push({
+            name: 'Add',
+            id: '0',
+            order: 3,
+            icon: 'none'
+          })
+  
         }
-        this.tabs.push(firstTab)
       }
-      console.log( "baseDirMetadata ", baseDirMetadata)
-
     })
     // this.baseDirService.baseDir.pipe(takeUntil(this.destroy$))
     //   .subscribe((sourceBaseDir: string) => this.baseDir = sourceBaseDir);

@@ -6,6 +6,7 @@ import { IpcRenderer } from 'electron';
 @Injectable({
   providedIn: 'root'
 })
+//TODO delete me!
 export class ElectronDataService {
 
   private ipc: IpcRenderer

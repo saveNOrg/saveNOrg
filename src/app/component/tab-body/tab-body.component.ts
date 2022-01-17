@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { NotesNodeImp } from '../../utils/NotesNodeImp';
 import { ResizeEvent } from 'angular-resizable-element';
-import { BaseDirService } from 'src/app/service/baseDir.service';
+import { DataService } from '../../service/data.service';
 import { Subject } from 'rxjs'
 import { takeUntil } from 'rxjs/operators';
+import { DataState } from '../../utils/interfaces';
 
 @Component({
   selector: 'app-tab-body',
@@ -12,23 +13,21 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class TabBodyComponent implements OnInit {
 
-  NOTES_DATA: NotesNodeImp[]=[];
+
   public style: object = {};
+  stateData: DataState;
   isSelected:boolean=false;
-  node_selected: NotesNodeImp = null;
-  baseDir:string='';
   
   private destroy$: Subject<void> = new Subject<void>();
 
-  constructor(private baseDirService:BaseDirService) { }
+  constructor(private dataService:DataService) { }
 
   ngOnInit(): void {
-    this.baseDirService.baseDirMetadata.pipe(takeUntil(this.destroy$))
-      .subscribe((sourceBaseDir: string) => this.baseDir = sourceBaseDir);
-    // this.store_service.select(state => state).pipe(takeUntil(this.destroy$))
-    // .subscribe( state => {
-    //   this.isSelected =  state.note.note != null;
-    // });
+    this.dataService.stateDataObservable.pipe(takeUntil(this.destroy$))
+      .subscribe((stateData: DataState) => {
+        this.stateData = stateData
+        this.isSelected = stateData.current_note_id?true:false;
+      } );
   }
 
   onResizeEnd(event: ResizeEvent): void {
@@ -43,6 +42,8 @@ export class TabBodyComponent implements OnInit {
   }
 
   addNote() {
+    this.dataService.addNote();
+    this.isSelected=true;
   }
 
 }

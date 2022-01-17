@@ -56,8 +56,8 @@ app.on('window-all-closed', () => {
   }
 });
 
-ipcMain.on("initProject", (event, groupDir) => {
-  win.webContents.send("initProjectResponse", os.initProductDir(groupDir));
+ipcMain.on("initProject", (event, workspaceDir) => {
+  win.webContents.send("initProjectResponse", os.initProductDir(workspaceDir));
 });
 
 ipcMain.on("createTab", (event) => {

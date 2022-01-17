@@ -1,9 +1,10 @@
-import { Component, OnInit, ViewEncapsulation, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { NotesNodeImp } from '../../utils/NotesNodeImp';
 import { Subject } from 'rxjs'
 import { takeUntil } from 'rxjs/operators';
 import { ElectronDataService } from '../../service/electron.data.service';
-import { BaseDirService } from 'src/app/service/baseDir.service';
+import { DataService } from '../../service/data.service';
+import { DataState } from '../../utils/interfaces';
 
 @Component({
   selector: 'app-toolbar',
@@ -23,19 +24,19 @@ export class ToolbarComponent implements OnInit, OnDestroy {
   editBaseDir: boolean = false;
 
   private destroy$: Subject<void> = new Subject<void>();
+  @ViewChild('baseDirElement') baseDirElement:ElementRef;
 
 
   constructor(private os_service: ElectronDataService,
-    private baseDirService: BaseDirService) { }
+    private dataService: DataService) { }
+  
 
   ngOnInit(): void {
-    this.baseDirService.baseDirMetadata.pipe(takeUntil(this.destroy$))
-      .subscribe((baseDirMetadata: any) => {
-        console.log("toolbar sourceBaseDir ", baseDirMetadata)
-        if( baseDirMetadata.extra && baseDirMetadata.extra['baseDir'] ){
-          this.baseDir = baseDirMetadata.extra['baseDir'];
+    this.dataService.stateDataObservable.pipe(takeUntil(this.destroy$))
+      .subscribe((data: DataState) => {
+        if( data.base_dir ){
+          this.baseDir = data.base_dir;
         }
-        //this.baseDir = sourceBaseDir
       });
   }
 
@@ -63,11 +64,12 @@ export class ToolbarComponent implements OnInit, OnDestroy {
 
   updateBaseDir() {
     this.editBaseDir = true;
+    this.baseDirElement.nativeElement.focus();
   }
 
   setBaseDir() {
     this.editBaseDir = false;
-    this.baseDirService.setWorkspaceDir(this.baseDir);
+    this.dataService.setWorkspaceDir(this.baseDir);
   }
 
   ngOnDestroy() {

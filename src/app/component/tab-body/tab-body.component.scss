@@ -1,20 +1,33 @@
-.app-content{
+.tab-body-content{
     height: 100%;
     border: 2px solid #5c7c96;
 }
 
-.app-nav{
+.tab-body-nav{
     background: lavender;
     min-width: 100px;
     box-sizing: border-box; 
     flex: 1 1 auto;
 }
 
-.app-note-tools{
+.tab-body-note-tools{
     padding-left: 4px;
 }
 
-.app-data{
+.tab-body-btn{
+    cursor: pointer;
+}
+
+.tab-body-btn:hover{
+    background: #003554;
+    border: 1px solid blue;
+}
+
+.tab-body-btn-disabled{
+    opacity: 0.5;
+}
+
+.tab-body-data{
     background: ivory;
     box-sizing: border-box;
     flex: 3 3 auto;

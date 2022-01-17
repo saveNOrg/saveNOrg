@@ -6,7 +6,7 @@
             <span *ngIf="!editBaseDir" class="toolbar-basedir">{{baseDir}}</span>
             <mat-form-field *ngIf="editBaseDir" class="toolbar-basedir-input" appearance="outline" floatLabel="never">
                 <input matInput placeholder="Directory" size="20" (focusout)="setBaseDir()" (keyup.Enter)="setBaseDir()"
-                    [(ngModel)]="baseDir" class="toolbar-input" />
+                    [(ngModel)]="baseDir" class="toolbar-input" #baseDirElement/>
             </mat-form-field>
             <img alt="Add The Base Directory" src="assets/baseline_create_black_24dp.png" class="toolbar-basedir-btn"
                 (click)="updateBaseDir()" />

@@ -15,10 +15,18 @@ app.get( "/", ( req, res ) => {
 } );
 
 app.post('/initProject', ( req, res ) => {
-    let groupDir = req.body.groupDir
-    let dir = path.join(__dirname,'specs', groupDir)
+    let workspaceDir = req.body.workspaceDir
+    let dir = path.join(__dirname,'specs', workspaceDir)
     console.log(dir)
     res.send(os.initProductDir(dir));
+} );
+
+app.post('/createNote', ( req, res ) => {
+    res.send(os.createNote(
+        req.body.id,
+        req.body.data,
+        req.body.metadata,
+        req.body.groupDir));
 } );
 
 app.post('/test', ( req, res ) => {

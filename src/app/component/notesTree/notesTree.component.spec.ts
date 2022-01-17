@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NotesTreeComponent } from './navigation.component';
+import { NotesTreeComponent } from './notesTree.component';
 
 describe('NotesTreeComponent', () => {
   let component: NotesTreeComponent;
