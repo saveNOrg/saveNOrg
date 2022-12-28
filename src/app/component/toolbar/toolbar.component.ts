@@ -2,7 +2,6 @@ import { Component, OnInit, ViewEncapsulation, OnDestroy, ViewChild, ElementRef 
 import { NotesNodeImp } from '../../utils/NotesNodeImp';
 import { Subject } from 'rxjs'
 import { takeUntil } from 'rxjs/operators';
-import { ElectronDataService } from '../../service/electron.data.service';
 import { DataService } from '../../service/data.service';
 import { DataState } from '../../utils/interfaces';
 
@@ -27,8 +26,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
   @ViewChild('baseDirElement') baseDirElement:ElementRef;
 
 
-  constructor(private os_service: ElectronDataService,
-    private dataService: DataService) { }
+  constructor(private dataService: DataService) { }
   
 
   ngOnInit(): void {
@@ -59,7 +57,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
   }
 
   search() {
-    this.os_service.searchNotes(this.search_keyword);
+    this.dataService.searchNotes(this.search_keyword);
   }
 
   updateBaseDir() {

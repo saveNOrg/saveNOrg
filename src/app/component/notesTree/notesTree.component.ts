@@ -55,7 +55,7 @@ export class NotesTreeComponent implements OnInit {
   
   exec_action(action: string) {
     let index = this.data.findIndex(node => node.name == this.node_selected.name && node.level == this.node_selected.level);
-          
+    console.log('action', action)
     // switch (action) {
     //   case NoteActionTypes.AddNote: {
 
@@ -135,8 +135,13 @@ export class NotesTreeComponent implements OnInit {
     }
 
     this.data[selected].selected = true;
-  
-    //this.store_service.dispatch( new RenameNote({note: this.data[selected]}));
+    this.node_selected = new NotesNodeImp(this.data[selected].level, true);
+    this.node_selected.setAllPropertis(
+      this.data[selected].name,
+      this.data[selected].label,
+      this.data[selected].children);
+    
+    this.dataService.renameNote(this.node_selected);
   }
 
   renameNode(){

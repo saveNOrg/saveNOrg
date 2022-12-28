@@ -17,6 +17,14 @@ export class NotesNodeImp implements NotesNode{
         this.selected = selected;
     }
 
+    setAllPropertis( name: string, label: string, 
+        children?: NotesNode[]
+    ){
+        this.name =name;
+        this.label = label;
+        this.children = children;
+    }
+
     setLabel(label: string){
         this.label = label;
         let name_parts = this.name.split('-'); 

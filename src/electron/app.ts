@@ -3,6 +3,7 @@ import * as path from "path";
 import * as url from "url";
 import * as fs from "fs";
 import * as os from './library/filesystem.component';
+import * as CONSTANTS from './library/constants';
 
 let win: BrowserWindow;
 
@@ -76,26 +77,26 @@ ipcMain.on("loadNotes4Group", (event) => {
   //TODO
 });
 
-ipcMain.on("saveData", (event, note_name, note_data, groupDir) => {
+ipcMain.on(CONSTANTS.save_note_data_path, (event, note_name, note_data, groupDir) => {
   os.saveNote(note_name, note_data, groupDir)
 });
 
-ipcMain.on("createNote", (event, note_name, note_data, metadata, groupDir) => {
+ipcMain.on(CONSTANTS.create_note_path, (event, note_name, note_data, metadata, groupDir) => {
   os.createNote(note_name, note_data, metadata, groupDir)
 });
 
-ipcMain.on("openNote", (event, note_name, groupDir) => {
+ipcMain.on(CONSTANTS.open_note_path, (event, note_name, groupDir) => {
   os.getData(note_name, groupDir);
 });
 
-ipcMain.on("deleteNote", (event, note_name, metadata, groupDir) => {
+ipcMain.on(CONSTANTS.delete_note_path, (event, note_name, metadata, groupDir) => {
   os.deleteNote(note_name,groupDir,metadata);
 });
 
-ipcMain.on("renameNote", (event, metadata, groupDir) => {
+ipcMain.on(CONSTANTS.rename_note_path, (event, metadata, groupDir) => {
   os.updateMetadata(groupDir, metadata);
 });
 
-ipcMain.on("searchNotes", (event, pattern, groupDir) => {
+ipcMain.on(CONSTANTS.search_notes_path, (event, pattern, groupDir) => {
   os.search(pattern,groupDir);
 });

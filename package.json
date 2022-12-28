@@ -15,6 +15,7 @@
     "electron": "ng build --base-href ./ && tsc --p src/electron && electron ./dist/electron/app.js",
     "electron:test": "jasmine-ts --config=src/electron/jasmine.json -P src/electron/tsconfig.json",
     "e2e": "ng e2e",
+    "client:dev": "ng serve --proxy-config src/proxy.conf.json", 
     "server:dev": "npx nodemon --watch 'src/electron/**' --ext 'ts' --ignore 'src/**/*.spec.ts' --exec 'ts-node -P src/electron/tsconfig.json src/electron/server.ts'",
     "package": "electron-forge package",
     "make": "electron-forge make"

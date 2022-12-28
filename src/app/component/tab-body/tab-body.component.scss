@@ -1,10 +1,12 @@
+@import "../../../styles.scss";
+
 .tab-body-content{
     height: 100%;
     border: 2px solid #5c7c96;
 }
 
 .tab-body-nav{
-    background: lavender;
+    background: $headerBackground;
     min-width: 100px;
     box-sizing: border-box; 
     flex: 1 1 auto;
@@ -12,6 +14,7 @@
 
 .tab-body-note-tools{
     padding-left: 4px;
+    padding-bottom: 8px;
 }
 
 .tab-body-btn{

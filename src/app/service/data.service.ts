@@ -26,7 +26,10 @@ export class DataService {
   
   
   init_project_path:string='initProject';
-  add_note_path:string='createNote';
+  create_note_path:string='createNote';
+  rename_note_path:string='renameNote';
+  save_note_data_path:string='saveData';
+  search_notes_path:string='searchNotes';
 
   constructor(private http: HttpClient) { 
     if ((<any>window).require) {
@@ -78,25 +81,104 @@ export class DataService {
     let current_note = null;
     let new_note = new NotesNodeImp(current_note? (current_note.level+1):0, true); 
     if( this.dataState.current_note_id ){
-      current_note = this.dataState.current_tab_notes_metadata.find( note =>{
+      let current_note_index = this.dataState.current_tab_notes_metadata.findIndex( note =>{
         return note.name == this.dataState.current_note_id;
-      })  
+      })
+      this.dataState.current_tab_notes_metadata[current_note_index].selected = false;
+      current_note = this.dataState.current_tab_notes_metadata[current_note_index];
+    }else{
+      this.dataState.current_note_id = new_note.name;
     }
 
     this.dataState.current_tab_notes_metadata.push( new_note );
     if( this.inside_electron){
-      this.ipc.send(this.add_note_path, 
+      this.ipc.send(this.create_note_path, 
                     new_note.name,
                     '{}',
                     this.dataState.current_tab_notes_metadata,
                     this.dataState.base_dir);
+                    this.baseDirSource.next(this.dataState);
     }else{
-      this.http.post(this.serverUrl+'/'+this.add_note_path, 
+      this.http.post(this.serverUrl+'/'+this.create_note_path, 
       {
         "id":new_note.name,
         "data":'{}',
         "metadata":this.dataState.current_tab_notes_metadata,
         "groupDir": this.getGroupDir() })
+      .subscribe(
+        data => {
+          console.log("create note result", data);
+          this.baseDirSource.next(this.dataState);
+        },
+        error => {
+          this.handleError(error);
+        }
+      );
+    }
+  }
+
+  saveData(note2Save:NotesNodeImp, data:string){
+    if( this.inside_electron){
+      this.ipc.send(this.save_note_data_path, 
+                    note2Save.name,
+                    data,
+                    this.dataState.current_tab_notes_metadata,
+                    this.dataState.base_dir);
+    }else{
+      this.http.post(this.serverUrl+'/'+this.save_note_data_path, 
+      {
+        "id":       note2Save.name,
+        "data":     data,
+        "metadata": this.dataState.current_tab_notes_metadata,
+        "groupDir": this.getGroupDir() })
+      .subscribe(
+        data => {
+          console.log("create note result", data)
+        },
+        error => {
+          this.handleError(error);
+        }
+      );
+    }
+  }
+
+  renameNote(note2Rename:NotesNodeImp){
+    const index = this.dataState.current_tab_notes_metadata.findIndex(note => note.name == note2Rename.name);
+    this.dataState.current_tab_notes_metadata[index]=note2Rename;
+    if( this.inside_electron){
+      this.ipc.send(this.rename_note_path, 
+                    note2Rename.name,
+                    '{}',
+                    this.dataState.current_tab_notes_metadata,
+                    this.dataState.base_dir);
+    }else{
+      this.http.post(this.serverUrl+'/'+this.rename_note_path, 
+      {
+        "id":note2Rename.name,
+        "data":'{}',
+        "metadata":this.dataState.current_tab_notes_metadata,
+        "groupDir": this.getGroupDir() })
+      .subscribe(
+        data => {
+          console.log("create note result", data)
+        },
+        error => {
+          this.handleError(error);
+        }
+      );
+    }
+  }
+
+  searchNotes(pattern:string){
+    if( this.inside_electron){
+      this.ipc.send(this.search_notes_path, 
+                    this.dataState.base_dir,
+                    pattern);
+    }else{
+      this.http.post(this.serverUrl+'/'+this.search_notes_path, 
+      {
+        "groupDir": this.getGroupDir(),
+        "pattern": pattern })
       .subscribe(
         data => {
           console.log("create note result", data)

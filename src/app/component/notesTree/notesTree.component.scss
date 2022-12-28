@@ -1,13 +1,16 @@
+@import "../../../styles.scss";
+
 .navigation-container{
-    background: lavender;
+    background: $headerBackground;
 }
 
 .navigation-node{
-    background: lavender;
+    background: $headerBackground;
     width: 100%;
     height: 30px;
     border: 1px solid lightgray;
     outline: 1px solid lightgray;
+    border-style: inset;
 }
 
 .navigation-node-selected{
@@ -28,7 +31,7 @@
 .navigation-leave{
     border: 0px;
     outline-width: 0px;
-    background: lavender;
+    background: $headerBackground;
     width: 100%;
     text-align: left;
 }
@@ -44,7 +47,7 @@
 }
 
 .navigation-button{
-    background: lavender;
+    background: $headerBackground;
     border: 0px;
     width: 100%;
     text-align: left;

@@ -1,10 +1,11 @@
 import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { EditorChangeContent, EditorChangeSelection } from 'ngx-quill'
 import Quill from 'quill'
-import { ElectronDataService } from '../../service/electron.data.service';
+import { DataService } from '../../service/data.service';
 import { interval, Subscription, VirtualTimeScheduler } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { NotesNodeImp } from '../../utils/NotesNodeImp';
+import { DataState } from '../../utils/interfaces';
 import { Subject } from 'rxjs'
 import { takeUntil } from 'rxjs/operators';
 
@@ -21,103 +22,41 @@ export class NotesDataComponent implements OnInit, OnDestroy {
   focused = false
   dirty: boolean = false;
   node_selected: NotesNodeImp = null;
-  data: any = null;
   subscription: Subscription;
   source = interval(environment.save_time);
 
   private destroy$: Subject<void> = new Subject<void>();
 
-  constructor(private os_service: ElectronDataService) {
+  constructor(private dataService:DataService) {
   }
 
   ngOnInit(): void {
 
-    // this.store_service.select(fileSelector).pipe(takeUntil(this.destroy$))
-    //   .subscribe(state => {
-
-    //     if (state.file) {
-
-    //       this.node_selected = state.file;
-    //       let action = state.type;
-    //       let data = state.data;
-
-    //       if (this.node_selected && data) {
-    //         this.data = data;
-    //       }
-    //       this.exec_action(action);
-    //     }
-    //   });
-
-    // this.store_service.select(noteSelector).pipe(takeUntil(this.destroy$))
-    //   .subscribe(state => {
-    //     if (state.type === NoteActionTypes.RenameNote) {
-    //       if (this.node_selected.label) {
-    //         this.os_service.renameNote(this.node_selected.name, state.note.name);
-    //       }
-    //       this.node_selected = state.note;
-    //     }
-    //   });
+    this.dataService.stateDataObservable.pipe(takeUntil(this.destroy$))
+    .subscribe((data: DataState) => {
+      let selected_note = data.current_tab_notes_metadata.find( note => note.selected);
+      if( this.node_selected != null && selected_note.name != this.node_selected.name ){
+        this.saveData();
+      }
+      this.node_selected = new NotesNodeImp(selected_note.level,true);
+      this.node_selected.setAllPropertis(selected_note.name,selected_note.label,selected_note.children);
+      if( this.editor ){
+        this.editor.setContents([{insert:''}]);
+      }
+      console.log("New data ", this.node_selected)
+    });
 
     this.subscription = this.source.pipe(takeUntil(this.destroy$))
       .subscribe(val => this.saveData());
   }
 
-  exec_action(action: string) {
-    // switch (action) {
-    //   case FileActionTypes.SaveFile: {
-    //     this.saveData();
-    //     break;
-    //   }
-    //   case FileActionTypes.DeleteFile: {
-    //     this.updateData();
-    //     this.os_service.deleteNote(this.node_selected.name);
-    //     this.node_selected = null;
-    //     this.dirty = false;
-
-    //     break;
-    //   }
-    //   // case FileActionTypes.DirtyFile: {
-    //   //   this.saveData();
-
-    //   //   break;
-    //   // }
-    //   case FileActionTypes.LoadFile: {
-    //     if (this.editor) {
-    //       this.updateData();
-    //     }
-    //     break;
-    //   }
-    //   default: {
-    //     console.log("Default type ", action);
-    //     break;
-    //   }
-    // }
-  }
-
-  updateData() {
-    if (this.data && Object.keys(this.data).length > 0) {
-
-      let saved_data = {};
-      if (typeof this.data === "object") saved_data = this.data;
-      else saved_data = JSON.parse(this.data);
-
-      if (saved_data['ops']) {
-        this.editor.setContents(saved_data['ops']);
-        this.data = null;
-      }
-
-    } else {
-      this.editor.setContents({});
-    }
-
-  }
-
   created($event: Quill) {
-    console.log("created ", $event)
 
-    this.editor = $event;
+    this.editor = Object.assign($event);
     if (this.editor) {
-      this.updateData();
+      this.editor.setContents([{insert:''}]);
+    }else{
+      console.log('No editor!!!!!!!!!!!!!!1')
     }
   }
 
@@ -127,10 +66,9 @@ export class NotesDataComponent implements OnInit, OnDestroy {
   }
 
   saveData() {
-    if (this.dirty && this.node_selected && this.node_selected.label != '') {
-      this.os_service.saveData(this.node_selected.name, JSON.stringify(this.editor.getContents()));
+    if (this.dirty && this.node_selected ) {
+      this.dataService.saveData(this.node_selected, JSON.stringify(this.editor.getContents()));
     }
-    this.data = null;
     this.dirty = false;
   }
 
@@ -142,6 +80,9 @@ export class NotesDataComponent implements OnInit, OnDestroy {
 
   blur($event) {
     console.log("blur ", $event)
+    if( this.focus ){
+      this.saveData();
+    }
 
     this.focused = false
     this.blurred = true

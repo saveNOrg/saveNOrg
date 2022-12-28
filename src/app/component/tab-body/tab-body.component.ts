@@ -46,4 +46,9 @@ export class TabBodyComponent implements OnInit {
     this.isSelected=true;
   }
 
+  ngOnDestroy(){
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
 }

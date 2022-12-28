@@ -1,7 +1,9 @@
+@import "../../../styles.scss";
+
 .toolbar-container{
     width: 100%;
     height: 70px;
-    background: lavender;
+    background: $headerBackground;
 }
 
 .toolbar-basedir-empty{
@@ -52,7 +54,7 @@
     width: 60px;
 }
 .toolbar-btn:hover {
-    background-color: lavender;
+    background-color: $headerBackground;
     color:#000000;
     border: 0px;
 }

@@ -1,6 +1,8 @@
+@import "../styles.scss";
+
 .app-container{
     height: 100%;
-    background: lavender;
+    background: $headerBackground;
 }
 
 .app-tag-group{

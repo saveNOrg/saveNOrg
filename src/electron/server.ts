@@ -1,6 +1,7 @@
 import express from "express";
 import * as os from './library/filesystem.component';
 import * as path from "path";
+import * as CONSTANTS from './library/constants';
 
 var bodyParser = require('body-parser') 
 const app = express();
@@ -21,12 +22,44 @@ app.post('/initProject', ( req, res ) => {
     res.send(os.initProductDir(dir));
 } );
 
-app.post('/createNote', ( req, res ) => {
+app.post(`/${CONSTANTS.create_note_path}`, ( req, res ) => {
     res.send(os.createNote(
         req.body.id,
         req.body.data,
         req.body.metadata,
         req.body.groupDir));
+} );
+
+app.post(`/${CONSTANTS.save_note_data_path}`, ( req, res ) => {
+    res.send(os.saveNote(
+        req.body.id,
+        req.body.data,
+        req.body.groupDir));
+} );
+
+app.post(`/${CONSTANTS.open_note_path}`, ( req, res ) => {
+    res.send(os.getData(
+        req.body.id,
+        req.body.groupDir));
+} );
+
+app.post(`/${CONSTANTS.delete_note_path}`, ( req, res ) => {
+    res.send(os.deleteNote(
+        req.body.id,
+        req.body.groupDir,
+       req.body.metadata));
+} );
+
+app.post(`/${CONSTANTS.rename_note_path}`, ( req, res ) => {
+    res.send(os.updateMetadata(
+        req.body.groupDir,
+       req.body.metadata));
+} );
+
+app.post(`/${CONSTANTS.search_notes_path}`, ( req, res ) => {
+    res.send(os.search(
+       req.body.pattern,
+       req.body.groupDir));
 } );
 
 app.post('/test', ( req, res ) => {

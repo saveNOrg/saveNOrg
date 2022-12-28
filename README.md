@@ -50,7 +50,7 @@ The command `npm run electron` will build and start the application.
 
 Another possibility is `npm start`, this will only build the `Electron` portion of the application and will use the existing compiled portion of the Angular app. 
 
-To run the application in client-server mode, start the server `npm run server:def` and in another terminal, run the command `npx ng serve --proxy-config src/proxy.conf.json`. This speeds up the development, but you still need to test the application using `Electron`.
+To run the application in client-server mode, start the server `npm run server:dev` and in another terminal, run the command `npm run client:dev`. This speeds up the development, but you still need to test the application using `Electron`.
 
 ### Test
 
