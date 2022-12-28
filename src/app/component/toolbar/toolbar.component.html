@@ -4,7 +4,7 @@
         <div fxLayout="row" fxLayoutAlign="space-between center">
             <span *ngIf="!editBaseDir" class="toolbar-basedir-empty">Base Directory</span>
             <span *ngIf="!editBaseDir" class="toolbar-basedir">{{baseDir}}</span>
-            <mat-form-field *ngIf="editBaseDir" class="toolbar-basedir-input" appearance="outline" floatLabel="never">
+            <mat-form-field *ngIf="editBaseDir" class="toolbar-basedir-input" floatLabel="never">
                 <input matInput placeholder="Directory" size="20" (focusout)="setBaseDir()" (keyup.Enter)="setBaseDir()"
                     [(ngModel)]="baseDir" class="toolbar-input" #baseDirElement/>
             </mat-form-field>
@@ -15,7 +15,7 @@
         <!-- Search input -->
         <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="4">
 
-            <mat-form-field appearance="outline" floatLabel="never">
+            <mat-form-field floatLabel="never">
                 <mat-label>Search</mat-label>
                 <input matInput placeholder="Search" size="20" (keyup.Enter)="search()" [(ngModel)]="search_keyword"
                     class="toolbar-input" />

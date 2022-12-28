@@ -4,7 +4,7 @@ import { Tab } from './utils/interfaces';
 import { DataService } from './service/data.service';
 import { Subject } from 'rxjs'
 import { takeUntil } from 'rxjs/operators';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { DataState } from './utils/interfaces'
 
 @Component({
@@ -19,7 +19,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   tabs: Tab[] = [];
 
-  selected = new FormControl(0);
+  selected = new UntypedFormControl(0);
   renamingTabId: string = '';
   renamingTabName: string = '';
   baseDir: string = '';

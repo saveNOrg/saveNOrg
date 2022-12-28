@@ -113,9 +113,10 @@
       }
     }
   },
-  "defaultProject": "saveNOrg",
   "cli": {
     "analytics": "76ae250c-7ea9-44f1-8d97-126162e57133",
-    "defaultCollection": "@ngrx/schematics"
+    "schematicCollections": [
+      "@ngrx/schematics"
+    ]
   }
 }
